@@ -52,20 +52,20 @@ class PodcastController extends Controller
 
     public function UploadPodcast(Request $request)
     {
-        $file = $request->file('podcast');
-        $filename = $file->getClientOriginalName();
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        $random_filename = time() . uniqid() . "." . $ext;
-        $folder = uniqid() . '-' . now()->timestamp;
-        $file->storeAs('public/podcast/tmp/' . $folder, $random_filename);
-
-        DB::table('podcast_tmp_file')->insert([
-            'folder'    =>  $folder,
-            'filename'  =>  $random_filename,
-            'extension' =>  $ext,
-        ]);
-        return $folder;
         if ($request->hasFile('podcast')) {
+            $file = $request->file('podcast');
+            $filename = $file->getClientOriginalName();
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            $random_filename = time() . uniqid() . "." . $ext;
+            $folder = uniqid() . '-' . now()->timestamp;
+            $file->storeAs('public/podcast/tmp/' . $folder, $random_filename);
+
+            DB::table('podcast_tmp_file')->insert([
+                'folder'    =>  $folder,
+                'filename'  =>  $random_filename,
+                'extension' =>  $ext,
+            ]);
+            return $folder;
         }
         return '';
     }

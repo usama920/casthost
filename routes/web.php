@@ -102,7 +102,7 @@ Route::group(['prefix' => 'users', 'middleware' => 'user_auth'], function () {
 
     Route::get('/podcast/new', [PodcastController::class, 'NewPodcast']);
     Route::get('/podcast/new/revert/{id}', [PodcastController::class, 'RevertPodcast']);
-    Route::post('/podcast/new/upload/{id}', [PodcastController::class, 'UploadPodcast']);
+    Route::post('/podcast/new/upload', [PodcastController::class, 'UploadPodcast']);
     Route::post('/podcast/save', [PodcastController::class, 'SavePodcast']);
 
     Route::get('/podcasts', [PodcastController::class, 'UserPodcasts']);
@@ -172,6 +172,7 @@ Route::group(['prefix' =>'superAdmin', 'middleware' => 'super_auth'], function (
 });
 Route::get('/superAdmin/logout', [SuperDashboardController::class, 'SuperLogout']);
 
+Route::get('/rss/{username}', [HomeController::class, 'UserRSS']);
 
 Route::get('/{username}', [HomeController::class, 'UserHomePage']);
 Route::get('/{username}/about', [HomeController::class, 'UserAboutPage']);

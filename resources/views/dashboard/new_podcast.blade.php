@@ -201,7 +201,6 @@
                 },
             },
             revert: (uniqueFileId, load, error) => {
-                alert(uniqueFileId);
                 $.ajax({
                     url: '/users/podcast/new/revert/' + uniqueFileId,
                     success: function(response) {},

@@ -555,4 +555,33 @@ class HomeController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Something went wrong.']);
         }
     }
+
+    public function UserRSS($username)
+    {
+        $basic_settings = BasicSettings::first();
+        $link = url('/'.$username);
+        // $user = User::where(['username' => $username])->first();
+        // $feed = '<?xml version="1.0" encoding="UTF-8"';
+        // $feed .= '<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">';
+        // $feed .= '<channel>';
+        // $feed .= "<title>$basic_settings->site_title</title>";
+        // $feed .= "<link>$link</link>";
+        // $feed .= "<description>$basic_settings->site_title RSS Feed</description>";
+        $podcasts = Podcast::where([
+            'status'   =>  1,
+            'admin_status' => 1
+        ])->where('premiere_datetime', '<', date('Y-m-d H:i:s'))->with(['category:id,title', 'user:id,name,username', 'views', 'downloads'])->whereRelation('user', 'username', '=', $username)->latest()->paginate(18);
+        return response()->view('rss', [
+            'link' => $link,
+            'basic_settings' => $basic_settings,
+            'podcasts' => $podcasts
+        ])->header('Content-Type', 'text/xml');
+        // prx($feed);
+        // if ($user) {
+        //     $page = UserHomePage::where(['user_id' => $user->id])->first();
+        //     return view('front.user_home', compact('podcasts', 'page', 'user'));
+        // } else {
+        //     return redirect('/');
+        // }   
+    }
 }

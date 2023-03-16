@@ -19,7 +19,6 @@ class UserPageController extends Controller
 
     public function HomePageSave(Request $request)
     {
-        prx($request->file());
         $page = UserHomePage::where(['user_id' => Auth::user()->id])->first();
         if ($request->hasFile('image')) {
             $file_path = public_path('project_assets/images/' . $page->image);

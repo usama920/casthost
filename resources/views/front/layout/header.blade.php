@@ -114,7 +114,22 @@
                                                         Contact
                                                     </a>
                                                 </li>
-                                                @if (logged_in())
+                                                @if (any_logged_in())
+                                                    @if(logged_in())
+                                                        <li>
+                                                            <a class="dropdown-item @yield('navbar_login')"
+                                                                href="{{ url('/users/Dashboard') }}">
+                                                                Dashboard
+                                                            </a>
+                                                        </li>
+                                                    @else
+                                                        <li>
+                                                            <a class="dropdown-item @yield('navbar_login')"
+                                                                href="{{ url('/admin/dashboard') }}">
+                                                                Dashboard
+                                                            </a>
+                                                        </li>
+                                                    @endif
                                                     <li>
                                                         <a class="dropdown-item @yield('navbar_login')"
                                                             href="{{ url('/logout') }}">

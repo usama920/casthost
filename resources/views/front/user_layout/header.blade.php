@@ -108,18 +108,42 @@
                                                         Contact
                                                     </a>
                                                 </li>
-                                                @if(logged_in())
-                                                <li>
-                                                    <a class="dropdown-item @yield('navbar_login')" href="{{url('/users/dashboard')}}">
-                                                        Dashboard
-                                                    </a>
-                                                </li>
+                                                @if (any_logged_in())
+                                                    @if(logged_in())
+                                                        <li>
+                                                            <a class="dropdown-item @yield('navbar_login')"
+                                                                href="{{ url('/users/Dashboard') }}">
+                                                                Dashboard
+                                                            </a>
+                                                        </li>
+                                                    @else
+                                                        <li>
+                                                            <a class="dropdown-item @yield('navbar_login')"
+                                                                href="{{ url('/admin/dashboard') }}">
+                                                                Dashboard
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                    <li>
+                                                        <a class="dropdown-item @yield('navbar_login')"
+                                                            href="{{ url('/logout') }}">
+                                                            Logout
+                                                        </a>
+                                                    </li>
+                                                @elseif (is_subscriber())
+                                                    <li>
+                                                        <a class="dropdown-item @yield('navbar_login')"
+                                                            href="{{ url('/subscriber/logout') }}">
+                                                            Logout
+                                                        </a>
+                                                    </li>
                                                 @else
-                                                <li>
-                                                    <a class="dropdown-item @yield('navbar_login')" href="{{url('/login')}}">
-                                                        Login
-                                                    </a>
-                                                </li>
+                                                    <li>
+                                                        <a class="dropdown-item @yield('navbar_login')"
+                                                            href="{{ url('/login') }}">
+                                                            Login
+                                                        </a>
+                                                    </li>
                                                 @endif
                                             </ul>
                                         </nav>
@@ -134,6 +158,8 @@
                                         @if($user->twitter != null)
                                         <li class="social-icons-twitter"><a href="{{$user->twitter}}" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a></li>
                                         @endif
+                                        <li class="social-icons-twitter"><a target="blank" href="{{url('/rss/'.$user->username)}}"
+                                                                target="_blank" title="Twitter"><i class="bi bi-rss"></i></a></li>
                                     </ul>
                                     <button class="btn header-btn-collapse-nav" data-bs-toggle="collapse" data-bs-target=".header-nav-main nav">
                                         <i class="fas fa-bars"></i>
