@@ -65,6 +65,7 @@ class HomeController extends Controller
 
     public function UserCategoryPage($username, $category_id)
     {
+        
         $user = User::where(['username' => $username])->first();
         if ($user) {
             $podcasts = Podcast::where([
