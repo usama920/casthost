@@ -130,10 +130,10 @@ Route::group(['prefix' => 'users', 'middleware' => 'user_auth'], function () {
     Route::post('/message/reply', [UserMessagesController::class, 'MessageReply']);
 });
  
+Route::get('/login', [SuperDashboardController::class, 'Login']);
+Route::post('/login', [SuperDashboardController::class, 'TryLogin']);
 Route::group(['prefix' =>'superAdmin', 'middleware' => 'super_auth'], function () {
     Route::get('/', [SuperDashboardController::class, 'Dashboard']);
-    Route::get('/login', [SuperDashboardController::class, 'Login']);
-    Route::post('/login', [SuperDashboardController::class, 'TryLogin']);
 
     Route::get('/admin/login/{id}', [SuperDashboardController::class, 'AdminLogin']);
     Route::post('/admin/add', [SuperDashboardController::class, 'AdminAdd']);
