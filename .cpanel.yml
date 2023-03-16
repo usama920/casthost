@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/casthost/public_html/pod.casthost.net/
+    - /bin/cp -R * $DEPLOYPATH
