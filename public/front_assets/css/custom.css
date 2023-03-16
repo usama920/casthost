@@ -1,0 +1,62 @@
+.btn-x-60 {
+    padding-left: 60px !important;
+    padding-right: 60px !important;
+}
+
+.font-normal {
+    font-style: normal;
+}
+
+.download_container {
+    top: 5px;
+    right: 15px;
+    border-radius: 50px;
+    width: 43px;
+    height: 43px;
+    position: absolute;
+    overflow: hidden;
+    transition: ease height 300ms;
+}
+
+.download_container:hover {
+    font-size: 16px;
+}
+
+.download_icon {
+    top: 7px;
+    position: relative;
+}
+
+.ellipsis_text {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.p-100 {
+    padding: 150px 0 !important;
+}
+
+.header-background-image {
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat;
+}
+
+.disable:hover {
+    background-color: #090d0f !important;
+    color: #777574 !important;
+    cursor: auto;
+}
+
+.show_button {
+    display:block;
+    background:transparent;
+    text-decoration:underline;
+    border:none;
+    padding: 0px;
+    font-weight: bold;
+}
+
+.error { 
+    color: red !important;
+}
