@@ -14,9 +14,9 @@
                         <h2 class="content-header-title float-start mb-0">Read Messages</h2>
                         <div class="breadcrumb-wrapper">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{url('/dashboard')}}">Home</a>
+                                <li class="breadcrumb-item"><a href="{{url('/superAdmin/dashboard')}}">Home</a>
                                 </li>
-                                <li class="breadcrumb-item"><a href="{{url('/admin/messages/read')}}">read Messages</a>
+                                <li class="breadcrumb-item"><a href="{{url('/superAdmin/messages/read')}}">read Messages</a>
                                 </li>
                             </ol>
                         </div>

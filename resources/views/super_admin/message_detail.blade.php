@@ -14,9 +14,9 @@
                         <h2 class="content-header-title float-start mb-0">Message Detail</h2>
                         <div class="breadcrumb-wrapper">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{url('/admin')}}">Home</a>
+                                <li class="breadcrumb-item"><a href="{{url('/superAdmin')}}">Home</a>
                                 </li>
-                                <li class="breadcrumb-item active"><a href="{{url('/admin/messages/detail/'.$message->id)}}">Message Detail</a>
+                                <li class="breadcrumb-item active"><a href="{{url('/superAdmin/messages/detail/'.$message->id)}}">Message Detail</a>
                                 </li>
                             </ol>
                         </div>

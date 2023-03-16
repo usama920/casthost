@@ -14,7 +14,7 @@
                         <h2 class="content-header-title float-start mb-0">All Admins</h2>
                         <div class="breadcrumb-wrapper">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{url('/dashboard')}}">Home</a>
+                                <li class="breadcrumb-item"><a href="{{url('/superAdmin')}}">Home</a>
                                 </li>
                                 <li class="breadcrumb-item"><a href="{{url('/superAdmin/admins')}}">Admins</a>
                                 </li>
