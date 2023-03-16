@@ -4,6 +4,7 @@ use App\Models\BasicSettings;
 use App\Models\UserAboutPage;
 use App\Models\UserSubscribers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 function prx($value) {
     echo "<pre>";
@@ -14,6 +15,14 @@ function prx($value) {
 function any_logged_in()
 {
     if (Auth::check()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function is_super_admin() {
+    if (Session::has('super_admin_id') && Session::has('super_admin_username')) {
         return true;
     } else {
         return false;

@@ -16,11 +16,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class SuperDashboardController extends Controller
 {
     public function Login()
     {
+        if(is_super_admin()) {
+            return redirect('/superAdmin');
+        }
         return view('super_admin.login');
     }
 
@@ -44,6 +48,13 @@ class SuperDashboardController extends Controller
         } else {
             return redirect()->back();
         }
+    }
+
+    public function SuperLogout()
+    {
+        Session::forget('super_admin_id');
+        Session::forget('super_admin_username');
+        return redirect('/superAdmin/login');
     }
 
     public function Dashboard()

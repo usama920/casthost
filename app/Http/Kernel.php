@@ -50,6 +50,9 @@ class Kernel extends HttpKernel
         'admin_auth' => [
             \App\Http\Middleware\AdminMiddleware::class,
         ],
+        'super_auth' => [
+            \App\Http\Middleware\SuperMiddleware::class,
+        ]
     ];
 
     /**

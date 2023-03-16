@@ -45,7 +45,7 @@ class PodcastController extends Controller
     
     public function NewPodcast()
     {
-        $categories = Categories::where(['status' => 1])->get();
+        $categories = Categories::where(['status' => 1, 'admin_id' => Auth::user()->belongs_to])->get();
         $date_now = date('Y-m-d H:i:s');
         return view('dashboard.new_podcast', compact('categories', 'date_now'));
     }
