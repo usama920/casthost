@@ -10,9 +10,10 @@ use App\Models\User;
 use App\Models\UserSubscribers;
 use App\Models\Views;
 use Carbon\Carbon;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class AdminDashboardController extends Controller
 {
@@ -53,5 +54,33 @@ class AdminDashboardController extends Controller
         $total_subscribers = UserSubscribers::whereIn('user_id', $user_ids)->count();
 
         return view('admin.home', compact('users', 'podcasts', 'last_day_views', 'last_seven_day_views', 'last_thirty_day_views', 'total_views', 'last_day_downloads', 'last_seven_day_downloads', 'last_thirty_day_downloads', 'total_downloads', 'total_subscribers'));
+    }
+
+    public function AdminChangePassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:6'
+        ]);
+
+        $user = User::where(['id' => Auth::user()->id])->first();
+        if ($user) {
+            $check = Hash::check($request->old_password, $user->password);
+            if ($check) {
+                $user->password = Hash::make($request->new_password);
+                $user->save();
+                Session::flash('message', 'Password changed!');
+                Session::flash('alert-type', 'success');
+                return redirect()->back();
+            } else {
+                Session::flash('message', 'Old password does not match!');
+                Session::flash('alert-type', 'error');
+                return redirect()->back();
+            }
+        } else {
+            Session::flash('message', 'Something went wrong!');
+            Session::flash('alert-type', 'error');
+            return redirect()->back();
+        }
     }
 }

@@ -18,7 +18,7 @@ use App\Models\UserSubscribers;
 use App\Models\Views;
 use Exception;
 use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -28,7 +28,7 @@ class HomeController extends Controller
 {
     public function Home()
     {
-        // Artisan::call('storage:link');
+        Artisan::call('storage:link');
         // die;
         $podcasts = Podcast::where([
             'status'   =>  1,

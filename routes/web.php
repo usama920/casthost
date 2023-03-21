@@ -57,6 +57,8 @@ Route::post('/contact', [ContactController::class, 'SaveContact']);
 Route::get('/about', [HomeController::class, 'About']);
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin_auth'], function () {
+    Route::post('/change/password', [AdminDashboardController::class, 'AdminChangePassword']);
+
     Route::get('/', [AdminDashboardController::class, 'Dashboard']);
     Route::get('/dashboard', [AdminDashboardController::class, 'Dashboard']);
     Route::post('/user/add', [UserController::class, 'AddUser']);
