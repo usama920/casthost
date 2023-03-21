@@ -24,7 +24,9 @@ use App\Http\Controllers\Super\BasicSettingsController;
 use App\Http\Controllers\Super\SuperDashboardController;
 use App\Http\Controllers\Super\SuperPageController;
 use App\Http\Controllers\Super\SuperSupportController;
-
+use App\Http\Controllers\Admin\AdminMessagesController;
+use App\Http\Controllers\Admin\AdminPageController;
+use App\Http\Controllers\Admin\AdminProfileController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -60,17 +62,37 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin_auth'], function () {
     Route::post('/user/add', [UserController::class, 'AddUser']);
     Route::post('/user/add/verify/email', [UserController::class, 'AddUserVerifyDuplication']);
     Route::get('/users', [UserController::class, 'Users']);
+    Route::get('/user/delete/{id}', [UserController::class, 'DeleteUser']);
     Route::get('/user/detail/{id}', [UserController::class, 'UserDetail']);
     Route::get('/users/search', [UserController::class, 'SearchUser']);
     Route::get('/user/inactive/{id}', [UserController::class, 'InactiveUser']);
     Route::get('/user/active/{id}', [UserController::class, 'ActiveUser']);
 
+    Route::post('/user/edit/memory', [UserController::class, 'UserEditMemory']);
+
+    Route::get('/users/export', [UserController::class, 'ExportUsers']);
+
+    Route::get('/podcast/new', [AdminPodcastController::class, 'NewPodcast']);
+    Route::get('/podcast/new/revert/{id}', [AdminPodcastController::class, 'RevertPodcast']);
+    Route::post('/podcast/new/upload', [AdminPodcastController::class, 'UploadPodcast']);
+    Route::post('/podcast/save', [AdminPodcastController::class, 'SavePodcast']);
+
+    Route::get('/podcast/inactive/{id}', [AdminPodcastController::class, 'InactivePodcast']);
+    Route::get('/podcast/active/{id}', [AdminPodcastController::class, 'ActivePodcast']);
+    Route::get('/podcast/detail/{id}', [AdminPodcastController::class, 'AdminPodcastDetail']);
+    Route::post('/podcast/update', [AdminPodcastController::class, 'UpdatePodcast']);
+    Route::get('/podcast/delete/{id}', [AdminPodcastController::class, 'DeletePodcast']);
+
+    Route::get('/podcasts', [AdminPodcastController::class, 'AdminPodcasts']);
     Route::get('/users/podcasts', [AdminPodcastController::class, 'UsersPodcasts']);
     Route::get('/users/podcasts/search', [AdminPodcastController::class, 'UsersPodcastsSearch']);
     Route::get('/user/podcast/detail/{id}', [AdminPodcastController::class, 'PodcastDetail']);
 
     Route::get('/user/podcast/inactive/{id}', [UserController::class, 'InactivePodcast']);
     Route::get('/user/podcast/active/{id}', [UserController::class, 'ActivePodcast']);
+
+    Route::get('/user_podcasts/export/{id}', [AdminPodcastController::class, 'ExportUserPodcasts']);
+    Route::get('/podcasts/export', [AdminPodcastController::class, 'ExportPodcasts']);
 
     Route::get('/support', [SupportController::class, 'Support']);
     Route::post('/support/add', [SupportController::class, 'NewSupport']);
@@ -84,6 +106,18 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin_auth'], function () {
     Route::post('/category/edit', [CategoriesController::class, 'EditCategory']);
     Route::get('/category/delete/{id}', [CategoriesController::class, 'DeleteCategory']);
 
+    Route::get('/profile', [AdminProfileController::class, 'Profile']);
+    Route::post('/profile', [AdminProfileController::class, 'SaveProfile']);
+
+    Route::get('/pages/home', [AdminPageController::class, 'HomePage']);
+    Route::post('/pages/home', [AdminPageController::class, 'HomePageSave']);
+
+    Route::get('/pages/contact', [AdminPageController::class, 'ContactPage']);
+    Route::post('/pages/contact', [AdminPageController::class, 'ContactPageSave']);
+
+    Route::get('/pages/about', [AdminPageController::class, 'AboutPage']);
+    Route::post('/pages/about', [AdminPageController::class, 'AboutPageSave']);
+
     Route::get('/default/pages/home', [AdminDefaultPageController::class, 'HomePage']);
     Route::post('/default/pages/home', [AdminDefaultPageController::class, 'HomePageSave']);
 
@@ -92,6 +126,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin_auth'], function () {
 
     Route::get('/default/pages/about', [AdminDefaultPageController::class, 'AboutPage']);
     Route::post('/default/pages/about', [AdminDefaultPageController::class, 'AboutPageSave']);
+
+    Route::get('/messages/unread', [AdminMessagesController::class, 'UnreadMessages']);
+    Route::get('/messages/read', [AdminMessagesController::class, 'ReadMessages']);
+    Route::get('/message/detail/{id}', [AdminMessagesController::class, 'MessageDetail']);
+    Route::post('/message/reply', [AdminMessagesController::class, 'MessageReply']);
 
 });
 
@@ -105,6 +144,7 @@ Route::group(['prefix' => 'users', 'middleware' => 'user_auth'], function () {
     Route::post('/podcast/new/upload', [PodcastController::class, 'UploadPodcast']);
     Route::post('/podcast/save', [PodcastController::class, 'SavePodcast']);
 
+    Route::get('/podcasts/export', [PodcastController::class, 'ExportPodcasts']);
     Route::get('/podcasts', [PodcastController::class, 'UserPodcasts']);
     Route::get('/podcast/inactive/{id}', [PodcastController::class, 'InactivePodcast']);
     Route::get('/podcast/active/{id}', [PodcastController::class, 'ActivePodcast']);
@@ -136,11 +176,14 @@ Route::group(['prefix' =>'superAdmin', 'middleware' => 'super_auth'], function (
     Route::get('/', [SuperDashboardController::class, 'Dashboard']);
 
     Route::get('/admin/login/{id}', [SuperDashboardController::class, 'AdminLogin']);
+    Route::get('/admin/delete/{id}', [SuperDashboardController::class, 'AdminDelete']);
     Route::post('/admin/add', [SuperDashboardController::class, 'AdminAdd']);
     Route::post('/admin/add/verify/email', [SuperDashboardController::class, 'AddAdminVerifyDuplication']);
     Route::get('/admins/search', [SuperDashboardController::class, 'SearchAdmin']);
     Route::get('/admin/inactive/{id}', [SuperDashboardController::class, 'InactiveAdmin']);
     Route::get('/admin/active/{id}', [SuperDashboardController::class, 'ActiveAdmin']);
+
+    Route::post('/admin/edit/memory', [SuperDashboardController::class, 'AdminEditMemory']);
 
     Route::get('/dashboard', [SuperDashboardController::class, 'Dashboard']);
     Route::get('/admins', [SuperDashboardController::class, 'Admins']);

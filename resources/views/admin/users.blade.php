@@ -36,6 +36,7 @@
                                                     <line x1="12" y1="5" x2="12" y2="19"></line>
                                                     <line x1="5" y1="12" x2="19" y2="12"></line>
                                                 </svg>Add New User</span></button>
+                                        <a class="dt-button create-new btn btn-success mx-1" href="{{url('/admin/users/export')}}"><span>Export</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -59,6 +60,7 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Email</th>
+                                            <th>Memory Stats</th>
                                             <th class="text-center">Podcasts</th>
                                             <th class="text-center">Subscribers</th>
                                             <th class="text-center">Views</th>
@@ -73,6 +75,13 @@
                                         <tr>
                                             <td>{{$user->name}}</td>
                                             <td>{{$user->email}}</td>
+                                            <td style="min-width: 215px;">
+                                                {{get_memory_usage($user->id, "user")}} / {{$user->memory_limit}} GB
+                                                <button type="button" class="badge rounded-pill badge-light-secondary"
+                                                                data-bs-toggle="modal" data-bs-target="#addNewCard" onclick="editMemoryLimit({{$user->id}}, {{$user->memory_limit}}, {{get_memory_usage_bytes($user->id, 'user')}})">
+                                                                Edit
+                                                            </button>
+                                            </td>
                                             <td class="text-center">{{$user->podcasts_count}}</td>
                                             <td class="text-center">{{$user->subscribers_count}}</td>
                                             <td class="text-center">{{$user->total_views}}</td>
@@ -88,12 +97,15 @@
                                                 <a href="{{url('/admin/user/detail/'.$user->id)}}">
                                                     <span class="badge rounded-pill badge-light-warning"><i data-feather="eye" class="me-50"></i>Detail</span>
                                                 </a>
+                                                <a href="{{url('/admin/user/delete/'.$user->id)}}">
+                                                    <span class="badge rounded-pill badge-light-danger"><i data-feather="trash" class="me-50"></i>Delete</span>
+                                                </a>
                                             </td>
                                         </tr>
                                         @endforeach
                                         @else
                                         <tr>
-                                            <td colspan="4" class="text-center">
+                                            <td colspan="7" class="text-center">
                                                 No Data Found.
                                             </td>
                                         </tr>
@@ -131,9 +143,17 @@
                                     <label class="form-label" for="basic-icon-default-fullname">Password</label>
                                     <input type="password" class="form-control dt-full-name" name="password" required placeholder="Password" minlength="6">
                                 </div>
+                                <div class="mb-1">
+                                    <label class="form-label" for="basic-icon-default-fullname">Memory Limit (GB)</label>
+                                    <input type="number" class="form-control dt-full-name" name="memory_limit" required placeholder="Memory Limit" min="1" max="{{$admin_memory_limit}}">
+                                </div>
+                                @if($admin_memory_limit > 0)
                                 <div id="error" class="error"></div>
                                 <input type="submit" class="btn btn-primary me-1 waves-effect waves-float waves-light" value="Save">
                                 <button type="reset" class="btn btn-outline-secondary waves-effect" data-bs-dismiss="modal">Cancel</button>
+                                @else
+                                <div id="error" class="error">You don't have any spare memory to allot any user.</div>
+                                @endif
                             </div>
                         </form>
                     </div>
@@ -143,8 +163,52 @@
     </div>
 </div>
 
+<div class="modal fade" id="addNewCard" tabindex="-1" aria-labelledby="addNewCardTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-transparent">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-sm-5 mx-50 pb-5">
+                    <h1 class="text-center mb-1" id="addNewCardTitle">Edit Memory Limit</h1>
+                    <!-- form -->
+                    <form method="POST" action="{{url('/admin/user/edit/memory')}}" class="row gy-1 gx-2 mt-75">
+                        @csrf
+                        <input type="hidden" name="id">
+                        <div class="col-12">
+                            <label class="form-label" for="newMemoryLimit">New Memory Limit</label>
+                            <div class="input-group input-group-merge">
+                                <input id="newMemoryLimit" name="newMemoryLimit"
+                                    class="form-control add-credit-card-mask" type="text"
+                                    placeholder="" required />
+                            </div>
+                        </div>
+
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary me-1 mt-1">Submit</button>
+                            <button type="reset" class="btn btn-outline-secondary mt-1" data-bs-dismiss="modal"
+                                aria-label="Close">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 <script>
+
+function editMemoryLimit(id, memory_limit, memory_used) {
+            $('input[name="id"]').val(id);
+            let minimum_limit = 1;
+            if(parseInt(memory_used) > 1073741824) {
+                minimum_limit = ceil(memory_used/1073741824);
+            }
+            $('input[name="newMemoryLimit"]').attr("placeholder", `Minimum ${minimum_limit}`);
+            $('input[name="newMemoryLimit"]').attr("min", minimum_limit);
+        }
 
 $("#addUserForm").on("submit", function (e) {
     e.preventDefault();

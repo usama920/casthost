@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\BasicSettings;
 use App\Models\Categories;
@@ -12,8 +13,11 @@ use App\Models\Downloads;
 use App\Models\Podcast;
 use App\Models\User;
 use App\Models\UserAboutPage;
+use App\Models\UserContact;
 use App\Models\UserContactPage;
 use App\Models\UserHomePage;
+use App\Models\UserMessagesReply;
+use App\Models\UserSubscribers;
 use App\Models\Views;
 use Exception;
 use Illuminate\Http\Request;
@@ -22,20 +26,28 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
+    public function ExportUsers()
+    {
+        return Excel::download(new UsersExport, 'UsersData.csv');
+    }
+
     public function AddUser(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
             'name' => 'required',
             'password' => 'required',
-            'username' => 'required'
+            'username' => 'required',
+            'memory_limit' => 'required'
         ]);
         $user = new User();
         $user->email = $request->email;
         $user->name = $request->name;
+        $user->memory_limit = $request->memory_limit;
         $user->username = $request->username;
         $user->password = Hash::make($request->password);
         $user->role = 2;
@@ -138,7 +150,9 @@ class UserController extends Controller
     public function Users()
     {
         $users = User::where(['role' => 2, 'belongs_to' => Auth::user()->id])->withCount(['podcasts', 'subscribers'])->get();
+        $admin_memory_limit = Auth::user()->memory_limit;
         foreach($users as $key => $user) {
+            $admin_memory_limit -= $user->memory_limit;
             $users[$key]->total_views = 0;
             $users[$key]->total_downloads = 0;
             $podcasts = $user->podcasts;
@@ -147,7 +161,8 @@ class UserController extends Controller
                 $users[$key]->total_downloads += Downloads::where(['podcast_id' => $podcast->id])->count();
             }
         }
-        return view('admin.users', compact('users'));
+        
+        return view('admin.users', compact('users', 'admin_memory_limit'));
     }
 
     public function UserDetail($id)
@@ -221,6 +236,92 @@ class UserController extends Controller
             if ($user && $user->belongs_to == Auth::user()->id) {
                 Podcast::where('id', $id)->update(['admin_status'   =>  1]);
             }
+        }
+        return redirect()->back();
+    }
+
+    public function DeleteUser($id)
+    {
+        $user = User::where(['id' => $id, 'role' => 2, 'belongs_to' => Auth::user()->id])->with(['podcasts'])->first();
+        if ($user) {
+            $podcasts = $user->podcasts;
+            foreach ($podcasts as $podcast) {
+                $file_path = storage_path('app/public/podcast/' . $podcast->id);
+                if (file_exists($file_path)) {
+                    $this->delTree($file_path);
+                }
+                Views::where(['podcast_id' => $podcast->id])->delete();
+                Downloads::where(['podcast_id' => $podcast->id])->delete();
+            }
+            Podcast::where(['user_id' => $id])->delete();
+
+            UserSubscribers::where(['user_id' => $id])->delete();
+            $user_contact = UserContact::where(['user_id' => $id])->get();
+            foreach ($user_contact as $contact) {
+                UserMessagesReply::where(['message_id' => $contact->id])->delete();
+            }
+            UserContact::where(['user_id' => $id])->delete();
+
+            $user_home_page = UserHomePage::where(['user_id' => $id])->first();
+            if ($user_home_page && $user_home_page->image !== null) {
+                $file_path = public_path('project_assets/images/' . $user_home_page->image);
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+            UserHomePage::where(['user_id' => $id])->delete();
+
+            $user_contact_page = UserContactPage::where(['user_id' => $id])->first();
+            if ($user_contact_page && $user_contact_page->image !== null) {
+                $file_path = public_path('project_assets/images/' . $user_contact_page->image);
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+            UserContactPage::where(['user_id' => $id])->delete();
+
+            $user_about_page = UserAboutPage::where(['user_id' => $id])->first();
+            if ($user_about_page && $user_about_page->profile_image !== null) {
+                $file_path = public_path('project_assets/images/' . $user_about_page->profile_image);
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+            if ($user_about_page && $user_about_page->cover_image !== null) {
+                $file_path = public_path('project_assets/images/' . $user_about_page->cover_image);
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+            UserAboutPage::where(['user_id' => $id])->delete();
+
+            User::where(['id' => $id, 'role' => 1])->delete();
+        }
+        return redirect()->back();
+    }
+
+    public function UserEditMemory(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'newMemoryLimit' => 'required'
+        ]);
+        $user = User::where(['id' => $request->id, 'belongs_to' => Auth::user()->id])->first();
+        if ($user) {
+            $get_memory_usage_bytes = get_memory_usage_bytes($user->id, "admin");
+            if ($get_memory_usage_bytes < ($request->newMemoryLimit * 1073741824)) {
+                User::where(['id' => $request->id])->update([
+                    'memory_limit' => $request->newMemoryLimit
+                ]);
+                Session::flash('message', 'Memory limit updated successfully.');
+                Session::flash('alert-type', 'success');
+            } else {
+                Session::flash('message', 'Invalid memory limit.');
+                Session::flash('alert-type', 'error');
+            }
+        } else {
+            Session::flash('message', 'Invalid user access.');
+            Session::flash('alert-type', 'error');
         }
         return redirect()->back();
     }

@@ -11,7 +11,7 @@ class CategoriesController extends Controller
 {
     public function Categories()
     {
-        $categories = Categories::all();
+        $categories = Categories::where(['admin_id' => Auth::user()->id])->get();
         return view('admin.categories', compact('categories'));
     }
 

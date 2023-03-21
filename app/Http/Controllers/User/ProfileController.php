@@ -20,8 +20,6 @@ class ProfileController extends Controller
             'name' => 'required'
         ]);
         $user = User::find(Auth::user()->id);
-
-
         $user->name = $request->name;
         $user->facebook = $request->facebook;
         $user->twitter = $request->twitter;

@@ -83,7 +83,12 @@
                         <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
 
                             <div class="card">
-                                <h4 class="card-header">User's Podcasts List</h4>
+                                <h4 class="card-header" style="justify-content: flex-start;">User's Podcasts List
+                                    <span>
+                                        <a class="dt-button create-new btn btn-success mx-1 my-1" href="{{url('/admin/user_podcasts/export/'.$user->id)}}"><span>Export</span></a>
+                                    </span>
+                                </h4>
+
                                 <div class="table-responsive">
                                     <table class="table datatable-project">
                                         <thead>

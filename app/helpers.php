@@ -1,10 +1,12 @@
 <?php
 
 use App\Models\BasicSettings;
+use App\Models\User;
 use App\Models\UserAboutPage;
 use App\Models\UserSubscribers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 function prx($value) {
     echo "<pre>";
@@ -100,4 +102,141 @@ function settings() {
 function about_page() {
     $page = UserAboutPage::first();
     return $page;
+}
+
+function get_memory_usage($id, $type) {
+    $total_size = 0;
+    if($type == "user") {
+        $user = User::where(['id' => $id])->with(['podcasts'])->first();
+        if($user) {
+            $podcasts = $user->podcasts;
+            foreach($podcasts as $podcast) {
+                $file_path = storage_path('app/public/podcast/' . $podcast->id);
+                if (file_exists($file_path)) {
+                    $file_data = scandir($file_path);
+                    foreach($file_data as $file) {
+                        if($file === '.' || $file === '..') {
+                            continue;
+                        } else {
+                            $path = $file_path.'/'.$file;
+                            $total_size += filesize($path);
+                        }
+                    }
+                }
+            }
+        }
+    } elseif($type == "admin") {
+        $users = User::where(['id' => $id])->orWhere(['belongs_to' => $id])->with(['podcasts'])->get();
+        foreach($users as $user) {
+            $podcasts = $user->podcasts;
+            foreach ($podcasts as $podcast) {
+                $file_path = storage_path('app/public/podcast/' . $podcast->id);
+                if (file_exists($file_path)) {
+                    $file_data = scandir($file_path);
+                    foreach ($file_data as $file) {
+                        if ($file === '.' || $file === '..') {
+                            continue;
+                        } else {
+                            $path = $file_path . '/' . $file;
+                            $total_size += filesize($path);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return format_folder_size($total_size);
+}
+
+function get_memory_usage_bytes($id, $type)
+{
+    $total_size = 0;
+    if ($type == "user") {
+        $user = User::where(['id' => $id])->with(['podcasts'])->first();
+        if ($user) {
+            $podcasts = $user->podcasts;
+            foreach ($podcasts as $podcast) {
+                $file_path = storage_path('app/public/podcast/' . $podcast->id);
+                if (file_exists($file_path)) {
+                    $file_data = scandir($file_path);
+                    foreach ($file_data as $file) {
+                        if ($file === '.' || $file === '..') {
+                            continue;
+                        } else {
+                            $path = $file_path . '/' . $file;
+                            $total_size += filesize($path);
+                        }
+                    }
+                }
+            }
+        }
+    } elseif ($type == "admin") {
+        $users = User::where(['id' => $id])->orWhere(['belongs_to' => $id])->with(['podcasts'])->get();
+        foreach ($users as $user) {
+            $podcasts = $user->podcasts;
+            foreach ($podcasts as $podcast) {
+                $file_path = storage_path('app/public/podcast/' . $podcast->id);
+                if (file_exists($file_path)) {
+                    $file_data = scandir($file_path);
+                    foreach ($file_data as $file) {
+                        if ($file === '.' || $file === '..') {
+                            continue;
+                        } else {
+                            $path = $file_path . '/' . $file;
+                            $total_size += filesize($path);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return $total_size;
+}
+
+function format_folder_size($size) {
+    if($size >= 1073741824) {
+        $size = number_format($size/ 1073741824, 2). ' GB';
+    } elseif($size >= 1048576) {
+        $size = number_format($size / 1048576, 2) . ' MB';
+    } elseif ($size >= 1024) {
+        $size = number_format($size / 1024, 2) . ' KB';
+    } elseif ($size > 1) {
+        $size = $size . ' Bytes';
+    } elseif ($size == 1) {
+        $size = $size . ' Byte';
+    } else {
+        $size = '0 Bytes';
+    }
+    return $size;
+}
+
+function get_remaining_memory($id) {
+    $total_size = 0;
+    $user = User::where(['id' => $id])->with(['podcasts'])->first();
+    if($user && isset($user->podcasts)) {
+        $podcasts = $user->podcasts;
+        foreach ($podcasts as $podcast) {
+            $file_path = storage_path('app/public/podcast/' . $podcast->id);
+            if (file_exists($file_path)) {
+                $file_data = scandir($file_path);
+                foreach ($file_data as $file) {
+                    if ($file === '.' || $file === '..') {
+                        continue;
+                    } else {
+                        $path = $file_path . '/' . $file;
+                        $total_size += filesize($path);
+                    }
+                }
+            }
+        }
+    }
+
+    $allowed_memory = $user->memory_limit * 1073741824;
+    $remaining_memory_bytes = $allowed_memory - $total_size;
+    $remaining_mbs = 0;
+    if($remaining_memory_bytes > 0) {
+        $remaining_mbs = round($remaining_memory_bytes / 1048576);
+        $remaining_mbs -= 2;
+    }
+    return $remaining_mbs;
 }

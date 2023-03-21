@@ -24,7 +24,7 @@ class AdminDashboardController extends Controller
         foreach ($users as $user) {
             array_push($user_ids, $user->id);
         }
-        $podcasts = Podcast::whereIn('user_id', $user_ids)->get();
+        $podcasts = Podcast::whereIn('user_id', $user_ids)->orWhere(['user_id' => Auth::user()->id])->get();
         foreach ($podcasts as $podcast) {
             array_push($podcast_ids, $podcast->id);
         }

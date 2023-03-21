@@ -24,6 +24,7 @@ class User extends Authenticatable
         'role',
         'belongs_to',
         'username',
+        'memory_limit',
         'image',
         'email',
         'password',
@@ -51,6 +52,16 @@ class User extends Authenticatable
     public function subscribers()
     {
         return $this->hasMany(UserSubscribers::class, 'user_id', 'id');
+    }
+    
+    public function views()
+    {
+        $podcasts = $this->podcasts();
+        $podcasts_ids = [];
+        foreach ($podcasts as $podcast) {
+           array_push($podcasts_ids, $podcast->id);
+        }
+        return Views::whereIn('podcast_id', $podcasts_ids);
     }
 
 

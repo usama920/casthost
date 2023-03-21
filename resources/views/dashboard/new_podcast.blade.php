@@ -4,6 +4,15 @@
 @section('content')
 <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
 
+@php
+    $remaining_mbs = get_remaining_memory(Auth::user()->id);
+    if($remaining_mbs > 2048) {
+        $limit = 2048;
+    } else {
+        $limit = $remaining_mbs;
+    }
+@endphp
+
 <div class="app-content content">
     <div class="content-overlay"></div>
     <div class="header-navbar-shadow"></div>
@@ -31,6 +40,7 @@
                     <div class="card">
 
                         <div class="card-body">
+                            @if($limit >= 10)
                             <form class="form form-horizontal" method="POST" action="{{url('/users/podcast/save')}}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
@@ -79,7 +89,7 @@
                                     <div class="col-12">
                                         <div class="mb-1 row">
                                             <div class="col-sm-3">
-                                                <label class="col-form-label" for="email-id">Video/Audio<br>[Max. Size: 2GB]</label>
+                                                <label class="col-form-label" for="email-id">Video/Audio<br>[Max. Size: {{$limit == 2048 ? "2GB" : $limit."MB"}}]</label>
                                             </div>
                                             <div class="col-sm-9">
                                                 <input type="file" class="form-control" name="podcast" required id="podcast">
@@ -122,6 +132,9 @@
                                     </div>
                                 </div>
                             </form>
+                            @else
+                            <h3 class="content-header-title mb-0 text-center" style="color: red;">You have already utilized memory alloted to you.</h3>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -161,7 +174,7 @@
             new Promise((resolve, reject) => {
                 resolve(type);
             }),
-        maxFileSize: '2048MB'
+        maxFileSize: '{{$limit}}MB'
     });
 
     pond1.on('addfilestart', (error, file) => {

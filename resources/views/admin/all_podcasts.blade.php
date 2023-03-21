@@ -39,7 +39,9 @@
                                         </div>
                                         <div class="col-md-3 col-sm-6">
                                             <input type="submit" value="Search" class="btn btn-primary my-1">
+                                            <a class="dt-button create-new btn btn-success mx-1 my-1" href="{{url('/admin/podcasts/export/')}}"><span>Export</span></a>
                                         </div>
+
                                     </div>
                                 </form>
                             </div>
@@ -86,7 +88,7 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="4" class="text-center">
+                                                    <td colspan="7" class="text-center">
                                                         No Data Found.
                                                     </td>
                                                 </tr>

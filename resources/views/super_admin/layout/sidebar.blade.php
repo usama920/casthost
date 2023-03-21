@@ -83,7 +83,7 @@
                 </a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item d-none">
                 <a class="d-flex align-items-center" href="{{url('/')}}">
                     <i data-feather='message-circle'></i>
                     <span class="menu-title text-truncate" data-i18n="Dashboards">Support Center</span>

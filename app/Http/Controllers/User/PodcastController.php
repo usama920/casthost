@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Exports\UserDashboardPodcastsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Categories;
 use App\Models\Podcast;
@@ -11,9 +12,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PodcastController extends Controller
 {
+
+    public function Test()
+    {
+        $file_path = storage_path('app/public/podcast/10');
+        $dirPermissions = "0755";
+        if (file_exists($file_path)) {
+            chmod($file_path, octdec($dirPermissions));
+        }
+    }
+
+    public function ExportPodcasts()
+    {
+        return Excel::download(new UserDashboardPodcastsExport(), 'PodcastsData.csv');
+    }
+
     public function UserPodcasts()
     {
         $podcasts = Podcast::where('user_id', Auth::user()->id)->with(['category', 'views', 'downloads'])->latest()->get();
@@ -37,9 +54,6 @@ class PodcastController extends Controller
         $last_thirty_day_downloads = count($podcast->downloads->where('created_at', '>=', $thirty_days_date));
         $categories = Categories::where(['status' => 1])->get();
         $date_now = date('Y-m-d H:i:s');
-        if($podcast->premiere_datetime > $date_now) {
-            // prx($podcast);
-        }
         return view('dashboard.podcast_detail', compact('podcast', 'categories', 'total_views', 'last_day_views', 'last_seven_day_views', 'last_thirty_day_views', 'total_downloads', 'last_day_downloads', 'last_seven_day_downloads', 'last_thirty_day_downloads', 'date_now'));
     }
     
@@ -52,6 +66,7 @@ class PodcastController extends Controller
 
     public function UploadPodcast(Request $request)
     {
+        // prx($request->file('podcast'));
         if ($request->hasFile('podcast')) {
             $file = $request->file('podcast');
             $filename = $file->getClientOriginalName();
@@ -67,7 +82,7 @@ class PodcastController extends Controller
             ]);
             return $folder;
         }
-        return '';
+        return 'nothing';
     }
 
     public function RevertPodcast($id)
@@ -83,14 +98,15 @@ class PodcastController extends Controller
 
     public function SavePodcast(Request $request)
     {
+        
         $request->validate([
             'title' =>  'required',
             'category_id' =>  'required',
-            'description'   =>  'required|min:50',
-            'premiere_datetime' =>  'required',
-            'cover_image'   =>  'required',
-            'podcast'   =>  'required'
+            'description'   =>  'required',
+            'premiere_datetime' =>  'required'
         ]);
+        
+        // prx($request->post());
 
         $podcast = new Podcast();
         $podcast->user_id = Auth::user()->id;
@@ -116,6 +132,16 @@ class PodcastController extends Controller
             Session::flash('alert-type', 'error');
             return redirect()->back();
         }
+        $file_path = storage_path('app/public/podcast/'.$podcast_id);
+        $dirPermissions = "0755";
+        if (file_exists($file_path)) {
+            chmod($file_path, octdec($dirPermissions));
+        }
+        $file_path = storage_path('app/public/podcast/'.$podcast_id.'/images');
+        if (file_exists($file_path)) {
+            chmod($file_path, octdec($dirPermissions));
+        }
+        
         if ($request->podcast != null) {
             $podcast_tmp_file = DB::table('podcast_tmp_file')->where('folder', $request->podcast)->first();
             if ($podcast_tmp_file) {

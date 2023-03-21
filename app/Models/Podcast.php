@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
@@ -28,6 +29,21 @@ class Podcast extends Model
         return $this->hasMany(Views::class, 'podcast_id', 'id');
     }
 
+    public function lastDayViews()
+    {
+        return $this->hasMany(Views::class, 'podcast_id', 'id')->where('created_at', '>=', date('Y-m-d'));
+    }
+
+    public function lastSevenDayViews()
+    {
+        return $this->hasMany(Views::class, 'podcast_id', 'id')->where('created_at', '>=', Carbon::today()->subDays(7));
+    }
+
+    public function lastThirtyDayViews()
+    {
+        return $this->hasMany(Views::class, 'podcast_id', 'id')->where('created_at', '>=', Carbon::today()->subDays(30));
+    }
+
     public function podcastViewsCount()
     {
         return $this->views()->count();
@@ -36,6 +52,21 @@ class Podcast extends Model
     public function downloads()
     {
         return $this->hasMany(Downloads::class, 'podcast_id', 'id');
+    }
+
+    public function lastDayDownloads()
+    {
+        return $this->hasMany(Downloads::class, 'podcast_id', 'id')->where('created_at', '>=', date('Y-m-d'));
+    }
+
+    public function lastSevenDayDownloads()
+    {
+        return $this->hasMany(Downloads::class, 'podcast_id', 'id')->where('created_at', '>=', Carbon::today()->subDays(7));
+    }
+
+    public function lastThirtyDayDownloads()
+    {
+        return $this->hasMany(Downloads::class, 'podcast_id', 'id')->where('created_at', '>=', Carbon::today()->subDays(30));
     }
 
     public function podcastDownloadsCount()

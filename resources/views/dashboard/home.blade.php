@@ -154,6 +154,19 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div class="avatar bg-light-success p-50 mb-1">
+                                    <div class="avatar-content">
+                                        <i data-feather='cloud' class="font-medium-5"></i>
+                                    </div>
+                                </div>
+                                <h3 class="fw-bolder">{{get_memory_usage(Auth::user()->id, "user")." / ".Auth::user()->memory_limit." GB"}}</h3>
+                                <p class="card-text"><strong>Memory Stats</strong></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
