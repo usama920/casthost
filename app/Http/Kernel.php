@@ -52,6 +52,9 @@ class Kernel extends HttpKernel
         ],
         'super_auth' => [
             \App\Http\Middleware\SuperMiddleware::class,
+        ],
+        'api_auth' => [
+            \App\Http\Middleware\ApiMiddleware::class,
         ]
     ];
 

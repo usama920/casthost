@@ -27,6 +27,15 @@ class LoginController extends Controller
         $credentials = ["email" => $request->email, "password" => $request->password];
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            if(Auth::user()->belongs_to !== null) {
+                $user_admin = User::where(['id' => Auth::user()->belongs_to])->first();
+                if($user_admin && $user_admin->status != 1) {
+                    Auth::logout();
+                    Session::flash('message', 'Access Denied.');
+                    Session::flash('alert-type', 'error');
+                    return redirect()->back();
+                }
+            }
             if (Auth::user()->status == 1) {
                 if (Auth::user()->role == 1) {
                     return redirect('/admin/dashboard');
