@@ -195,7 +195,7 @@
         server: {
             url: '/',
             process: {
-                url: 'admin/podcast/new/upload/',
+                url: 'admin/podcast/new/upload',
                 method: 'POST',
                 withCredentials: false,
                 headers: {
