@@ -22,7 +22,7 @@
                 @csrf
                 <div class="row">
                     <div class="form-group col">
-                        <input type="email" placeholder="Your E-mail" value="" data-msg-required="Please enter your email address." data-msg-email="Please enter a valid email address." maxlength="100" class="form-control" name="email" required>
+                        <input type="text" placeholder="Your Username" value="" data-msg-required="Please enter your username." data-msg-email="Please enter a valid username." maxlength="100" class="form-control" name="username" required>
                     </div>
                 </div>
                 <div class="row">

@@ -9,7 +9,6 @@ use App\Models\DefaultContactPage;
 use App\Models\DefaultHomePage;
 use App\Models\Downloads;
 use App\Models\Podcast;
-use App\Models\Token;
 use App\Models\User;
 use App\Models\UserAboutPage;
 use App\Models\UserContact;
@@ -24,17 +23,34 @@ use Illuminate\Support\Facades\Hash;
 
 class SuperApiController extends Controller
 {
+    public function getUsername($string)
+    {
+        $slug = preg_replace('/[^a-z0-9]+/i', '-', trim(strtolower($string)));
+        $exists = User::where('username', 'LIKE', '%'.$slug.'%')->get();
+        if(count($exists) > 0) {
+            foreach ($exists as $user) {
+                $data[] = $user->username;
+            }
+            if(in_array($slug, $data)) {
+                $count = 0;
+                while(in_array(($slug . '-' . ++$count), $data));
+                $slug = $slug . '-' . $count;
+            }
+        }
+        return $slug;
+    } 
+
     public function CreateAdmin(Request $request)
     {
         try {
             $request->validate([
                 'email' => 'required',
                 'name' => 'required',
-                'username' => 'required',
                 'memory_limit' => 'required'
             ]);
+
         } catch (\Throwable $th) {
-            return response()->json(['status' => 'error', 'message' => "Please provide all fields."]);
+            return response()->json(['status' => 'error', 'message' => $request->post()]);
         }
 
         $users = User::where(['username' => $request->username])->get();
@@ -47,14 +63,14 @@ class SuperApiController extends Controller
             $hashed_password = Hash::make($random_password);
             $admin = new User();
             $admin->name = $request->name;
-            $admin->username = $request->username;
+            $admin->username = $this->getUsername($request->name);
             $admin->email = $request->email;
             $admin->memory_limit = $request->memory_limit;
             $admin->role = 1;
             $admin->status = 1;
             $admin->password = $hashed_password;
             $admin->save();
-    
+
             $default_home_page = new DefaultHomePage();
             $default_home_page->image = null;
             $file_path = public_path('project_assets/images/default_home.jpg');
@@ -66,7 +82,7 @@ class SuperApiController extends Controller
             }
             $default_home_page->admin_id = $admin->id;
             $default_home_page->save();
-    
+
             $default_contact_page = new DefaultContactPage();
             $default_contact_page->image = null;
             $file_path = public_path('project_assets/images/default_contact.jpg');
@@ -80,7 +96,7 @@ class SuperApiController extends Controller
             $default_contact_page->text = "Contact Description";
             $default_contact_page->admin_id = $admin->id;
             $default_contact_page->save();
-    
+
             $default_about_page = new DefaultAboutPage();
             $default_about_page->cover_image = null;
             $file_path = public_path('project_assets/images/default_about.jpg');
@@ -102,7 +118,7 @@ class SuperApiController extends Controller
             $default_about_page->text = "About Me Description";
             $default_about_page->admin_id = $admin->id;
             $default_about_page->save();
-    
+
             $default_about_page = DefaultAboutPage::where(['admin_id' => $admin->id])->first();
             $user_about_page = new UserAboutPage();
             $user_about_page->user_id = $admin->id;
@@ -125,7 +141,7 @@ class SuperApiController extends Controller
             $user_about_page->heading = $default_about_page->heading;
             $user_about_page->text = $default_about_page->text;
             $user_about_page->save();
-    
+
             $default_contact_page = DefaultContactPage::where(['admin_id' => $admin->id])->first();
             $user_contact_page = new UserContactPage();
             $user_contact_page->user_id = $admin->id;
@@ -140,7 +156,7 @@ class SuperApiController extends Controller
             $user_contact_page->heading = $default_contact_page->heading;
             $user_contact_page->text = $default_contact_page->text;
             $user_contact_page->save();
-    
+
             $default_home_page = DefaultHomePage::where(['admin_id' => $admin->id])->first();
             $user_home_page = new UserHomePage();
             $user_home_page->user_id = $admin->id;
@@ -170,7 +186,7 @@ class SuperApiController extends Controller
         }
 
         $admin = User::where(['id' => $request->user_id, 'role' => 1])->first();
-        if($admin) {
+        if ($admin) {
             $admin->status = 0;
             $admin->save();
             return response()->json(['status' => 'success', 'message' => "User suspended successfully."]);
@@ -209,7 +225,7 @@ class SuperApiController extends Controller
             return response()->json(['status' => 'error', 'message' => "Please provide all fields."]);
         }
 
-        
+
         try {
             $admin = User::where(['id' => $request->user_id, 'role' => 1])->with(['podcasts'])->first();
             if ($admin) {
@@ -225,14 +241,14 @@ class SuperApiController extends Controller
                         Downloads::where(['podcast_id' => $podcast->id])->delete();
                     }
                     Podcast::where(['user_id' => $user->id])->delete();
-    
+
                     UserSubscribers::where(['user_id' => $user->id])->delete();
                     $user_contact = UserContact::where(['user_id' => $user->id])->get();
                     foreach ($user_contact as $contact) {
                         UserMessagesReply::where(['message_id' => $contact->id])->delete();
                     }
                     UserContact::where(['user_id' => $user->id])->delete();
-    
+
                     $user_home_page = UserHomePage::where(['user_id' => $user->id])->first();
                     if ($user_home_page && $user_home_page->image !== null) {
                         $file_path = public_path('project_assets/images/' . $user_home_page->image);
@@ -241,7 +257,7 @@ class SuperApiController extends Controller
                         }
                     }
                     UserHomePage::where(['user_id' => $user->id])->delete();
-    
+
                     $user_contact_page = UserContactPage::where(['user_id' => $user->id])->first();
                     if ($user_contact_page && $user_contact_page->image !== null) {
                         $file_path = public_path('project_assets/images/' . $user_contact_page->image);
@@ -250,7 +266,7 @@ class SuperApiController extends Controller
                         }
                     }
                     UserContactPage::where(['user_id' => $user->id])->delete();
-    
+
                     $user_about_page = UserAboutPage::where(['user_id' => $user->id])->first();
                     if ($user_about_page && $user_about_page->profile_image !== null) {
                         $file_path = public_path('project_assets/images/' . $user_about_page->profile_image);
@@ -267,7 +283,7 @@ class SuperApiController extends Controller
                     UserAboutPage::where(['user_id' => $user->id])->delete();
                 }
                 User::where(['belongs_to' => $admin->id])->delete();
-    
+
                 $podcasts = $admin->podcasts;
                 foreach ($podcasts as $podcast) {
                     $file_path = storage_path('app/public/podcast/' . $podcast->id);
@@ -278,14 +294,14 @@ class SuperApiController extends Controller
                     Downloads::where(['podcast_id' => $podcast->id])->delete();
                 }
                 Podcast::where(['user_id' => $request->user_id])->delete();
-    
+
                 UserSubscribers::where(['user_id' => $request->user_id])->delete();
                 $user_contact = UserContact::where(['user_id' => $request->user_id])->get();
                 foreach ($user_contact as $contact) {
                     UserMessagesReply::where(['message_id' => $contact->id])->delete();
                 }
                 UserContact::where(['user_id' => $request->user_id])->delete();
-    
+
                 $user_home_page = UserHomePage::where(['user_id' => $request->user_id])->first();
                 if ($user_home_page && $user_home_page->image !== null) {
                     $file_path = public_path('project_assets/images/' . $user_home_page->image);
@@ -294,7 +310,7 @@ class SuperApiController extends Controller
                     }
                 }
                 UserHomePage::where(['user_id' => $request->user_id])->delete();
-    
+
                 $user_contact_page = UserContactPage::where(['user_id' => $request->user_id])->first();
                 if ($user_contact_page && $user_contact_page->image !== null) {
                     $file_path = public_path('project_assets/images/' . $user_contact_page->image);
@@ -303,7 +319,7 @@ class SuperApiController extends Controller
                     }
                 }
                 UserContactPage::where(['user_id' => $request->user_id])->delete();
-    
+
                 $user_about_page = UserAboutPage::where(['user_id' => $request->user_id])->first();
                 if ($user_about_page && $user_about_page->profile_image !== null) {
                     $file_path = public_path('project_assets/images/' . $user_about_page->profile_image);
@@ -318,7 +334,7 @@ class SuperApiController extends Controller
                     }
                 }
                 UserAboutPage::where(['user_id' => $request->user_id])->delete();
-    
+
                 $default_home_page = DefaultHomePage::where(['admin_id' => $request->user_id])->first();
                 if ($default_home_page && $default_home_page->image !== null) {
                     $file_path = public_path('project_assets/images/' . $default_home_page->image);
@@ -327,7 +343,7 @@ class SuperApiController extends Controller
                     }
                 }
                 DefaultHomePage::where(['admin_id' => $request->user_id])->delete();
-    
+
                 $default_contact_page = DefaultContactPage::where(['admin_id' => $request->user_id])->first();
                 if ($default_contact_page && $default_contact_page->image !== null) {
                     $file_path = public_path('project_assets/images/' . $default_contact_page->image);
@@ -336,7 +352,7 @@ class SuperApiController extends Controller
                     }
                 }
                 DefaultContactPage::where(['admin_id' => $request->user_id])->delete();
-    
+
                 $default_about_page = DefaultAboutPage::where(['admin_id' => $request->user_id])->first();
                 if ($default_about_page && $default_about_page->profile_image !== null) {
                     $file_path = public_path('project_assets/images/' . $default_about_page->profile_image);
@@ -351,9 +367,9 @@ class SuperApiController extends Controller
                     }
                 }
                 DefaultAboutPage::where(['admin_id' => $request->user_id])->delete();
-    
+
                 Categories::where(['admin_id' => $request->user_id])->delete();
-    
+
                 User::where(['id' => $request->user_id, 'role' => 1])->delete();
                 return response()->json(['status' => 'success', 'message' => "User deleted successfully."]);
             } else {

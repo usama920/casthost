@@ -114,13 +114,13 @@ class SuperDashboardController extends Controller
     public function AddAdminVerifyDuplication(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            // 'email' => 'required|email',
             'username' => 'required'
         ]);
-        $users = User::where(['email' => $request->email])->get();
-        if (count($users) > 0) {
-            return response()->json(['status' => 'error', 'message' => 'Email already exists.']);
-        }
+        // $users = User::where(['email' => $request->email])->get();
+        // if (count($users) > 0) {
+        //     return response()->json(['status' => 'error', 'message' => 'Email already exists.']);
+        // }
         $users = User::where(['username' => $request->username])->get();
         if (count($users) > 0) {
             return response()->json(['status' => 'error', 'message' => 'Username already exists.']);

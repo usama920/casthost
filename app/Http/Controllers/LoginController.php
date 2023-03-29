@@ -20,11 +20,11 @@ class LoginController extends Controller
     public function LoginCheck(Request $request)
     {
         $request->validate([
-            'email' =>  'required',
+            'username' =>  'required',
             'password'  =>  'required'
         ]);
 
-        $credentials = ["email" => $request->email, "password" => $request->password];
+        $credentials = ["username" => $request->username, "password" => $request->password];
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             if(Auth::user()->belongs_to !== null) {
@@ -49,7 +49,7 @@ class LoginController extends Controller
                 return redirect()->back();
             }
         } else {
-            Session::flash('message', 'Wrong Email or Password.');
+            Session::flash('message', 'Wrong Username or Password.');
             Session::flash('alert-type', 'error');
             return redirect()->back();
         }
