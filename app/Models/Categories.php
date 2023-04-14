@@ -11,6 +11,7 @@ class Categories extends Model
 
     protected $fillable = [
         'title',
-        'status'
+        'status',
+        'paid'
     ];
 }

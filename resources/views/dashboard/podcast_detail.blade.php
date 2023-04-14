@@ -142,6 +142,20 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-12">
+                                                    <div class="mb-1 row">
+                                                        <div class="col-sm-3">
+                                                            <label class="form-label" for="basicSelect">Type</label>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <select class="form-select" id="basicSelect"
+                                                                name="paid" required>
+                                                                <option <?php if($podcast->paid == 1) echo "selected"; ?> value="1">Paid</option>
+                                                                <option <?php if($podcast->paid != 1) echo "selected"; ?> value="0">Un-Paid</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 @if ($podcast->premiere_datetime > $date_now)
                                                     <div class="col-12">
                                                         <div class="mb-1 row">

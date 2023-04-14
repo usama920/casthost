@@ -20,7 +20,7 @@ class ApiMiddleware
     {
         $token = Token::first();
         if ($request->bearerToken() != $token->token) {
-            return response()->json(['status' => 'error', 'message' => "Invalid Auth Token."]);
+            return response()->json(['status' => 'error', 'message' => $request->bearerToken()]);
         }
         return $next($request);
     }

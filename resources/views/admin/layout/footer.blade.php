@@ -3,7 +3,7 @@
     <div class="footer-copyright bg-transparent">
             <div class="row">
                 <div class="col mb-5">
-                    <p class="text-center text-3 mb-0">Copyright © 2022. All rights reserved by Casthost Podcasts</p>
+                    <p class="text-center text-3 mb-0">Copyright © 2023. All rights reserved by Casthost Podcasts</p>
                 </div>
             </div>
     </div>

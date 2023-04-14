@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\UserAboutPage;
 use App\Models\UserContactPage;
 use App\Models\UserHomePage;
+use App\Models\UserStorePage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,6 +33,34 @@ class AdminPageController extends Controller
             $page->image = $image_name;
             $page->save();
         }
+        return redirect()->back();
+    }
+
+    public function StorePage()
+    {
+        $page = UserStorePage::where(['user_id' => Auth::user()->id])->first();
+        return view('admin.admin_store_page', compact('page'));
+    }
+
+    public function StorePageSave(Request $request)
+    {
+        $request->validate([
+            'heading' => 'required'
+        ]);
+        $page = UserStorePage::where(['user_id' => Auth::user()->id])->first();
+        if ($request->hasFile('image')) {
+            $file_path = public_path('project_assets/images/' . $page->image);
+            if (file_exists($file_path) && $page->image != null) {
+                unlink($file_path);
+            }
+            $image = $request->file('image');
+            $ext = $image->extension();
+            $image_name = time() . uniqid() . '.' . $ext;
+            $image->move(public_path('project_assets/images'), $image_name);
+            $page->image = $image_name;
+        }
+        $page->heading = $request->heading;
+        $page->save();
         return redirect()->back();
     }
 

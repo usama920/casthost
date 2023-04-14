@@ -68,6 +68,8 @@
                                         <thead>
                                             <tr>
                                                 <th>Email</th>
+                                                <th>Username</th>
+                                                <th>Order ID</th>
                                                 <th>Memory Limit</th>
                                                 <th class="text-center">Status</th>
                                                 <th class="text-center">Actions</th>
@@ -78,6 +80,8 @@
                                                 @foreach ($admins as $admin)
                                                     <tr>
                                                         <td>{{ $admin->email }}</td>
+                                                        <td>{{ $admin->username }}</td>
+                                                        <td>{{ $admin->order_id }}</td>
                                                         <td style="min-width: 215px;">
                                                             {{ get_memory_usage($admin->id, 'admin') }} /
                                                             {{ $admin->memory_limit }} GB

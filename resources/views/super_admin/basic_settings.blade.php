@@ -82,7 +82,31 @@
                                         <div class="col-md-6 col-12">
                                             <div class="mb-1">
                                                 <label class="form-label" for="email-id-column">Instagram Handle</label>
-                                                <input type="instagram" class="form-control" name="instagram" value="{{$settings->instagram}}">
+                                                <input type="text" class="form-control" name="instagram" value="{{$settings->instagram}}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="mb-1">
+                                                <label class="form-label" for="email-id-column">Store Commission (%)</label>
+                                                <input type="number" step="0.1"  min="0.1" max="100" required class="form-control" name="store_commission" value="{{$settings->store_commission}}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="mb-1">
+                                                <label class="form-label" for="email-id-column">Subscription Commission (%)</label>
+                                                <input type="number" step="0.1" min="0.1" max="100" required class="form-control" name="subscription_commission" value="{{$settings->subscription_commission}}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="mb-1">
+                                                <label class="form-label" for="email-id-column">Stripe Transaction Fee</label>
+                                                <input type="number" step="0.1" min="0.1" required class="form-control" name="stripe_transaction_fee" value="{{$settings->stripe_transaction_fee}}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="mb-1">
+                                                <label class="form-label" for="email-id-column">Stripe Transaction Commission (%)</label>
+                                                <input type="number" step="0.1" min="0.1" max="100" required class="form-control" name="stripe_transaction_commission" value="{{$settings->stripe_transaction_commission}}">
                                             </div>
                                         </div>
                                         <div class="col-12">

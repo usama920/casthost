@@ -30,7 +30,6 @@
                 <div class="row">
                     <div class="col-md-12 col-12">
                         <div class="card">
-
                             <div class="card-body">
                                 <form class="form form-horizontal" method="POST"
                                     action="{{ url('/admin/podcast/update') }}" enctype="multipart/form-data">
@@ -137,6 +136,20 @@
                                                                         {{ $cat->title }}
                                                                     </option>
                                                                 @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="mb-1 row">
+                                                        <div class="col-sm-3">
+                                                            <label class="form-label" for="basicSelect">Type</label>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <select class="form-select" id="basicSelect"
+                                                                name="paid" required>
+                                                                <option <?php if($podcast->paid == 1) echo "selected"; ?> value="1">Paid</option>
+                                                                <option <?php if($podcast->paid != 1) echo "selected"; ?> value="0">Un-Paid</option>
                                                             </select>
                                                         </div>
                                                     </div>

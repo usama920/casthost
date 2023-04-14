@@ -21,7 +21,9 @@ class Podcast extends Model
         'premiere_datetime',
         'subscribers_mail',
         'description',
-        'status'
+        'status',
+        'admin_status',
+        'paid'
     ];
 
     public function views()

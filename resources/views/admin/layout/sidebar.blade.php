@@ -75,6 +75,12 @@
                             <span class="menu-item text-truncate" data-i18n="Analytics">Home Page</span>
                         </a>
                     </li>
+                    <li class="@yield('store_page')">
+                        <a class="d-flex align-items-center" href="{{ url('/admin/pages/store') }}">
+                            <i data-feather="circle"></i>
+                            <span class="menu-item text-truncate" data-i18n="Analytics">Store Page</span>
+                        </a>
+                    </li>
                     <li class="@yield('contact_page')">
                         <a class="d-flex align-items-center" href="{{ url('/admin/pages/contact') }}">
                             <i data-feather="circle"></i>
@@ -89,6 +95,7 @@
                     </li>
                 </ul>
             </li>
+
             <li class="nav-item">
                 <a class="d-flex align-items-center" href="{{url('/')}}">
                     <i data-feather="file-text"></i>
@@ -112,6 +119,58 @@
                         <a class="d-flex align-items-center" href="{{url('/admin/default/pages/about')}}">
                             <i data-feather="circle"></i>
                             <span class="menu-item text-truncate" data-i18n="Analytics">About Page</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a class="d-flex align-items-center" href="{{url('/')}}">
+                    <i data-feather='slack'></i>
+                    <span class="menu-title text-truncate" data-i18n="Dashboards">Store</span>
+                    <span class="badge badge-light-warning rounded-pill ms-auto me-1">3</span>
+                </a>
+                <ul class="menu-content">
+                    <li class="@yield('store_add_product')">
+                        <a class="d-flex align-items-center" href="{{url('/admin/store/add_product')}}">
+                            <i data-feather="circle"></i>
+                            <span class="menu-item text-truncate" data-i18n="Analytics">Add Product</span>
+                        </a>
+                    </li>
+                    <li class="@yield('store_products')">
+                        <a class="d-flex align-items-center" href="{{url('/admin/store/all_products')}}">
+                            <i data-feather="circle"></i>
+                            <span class="menu-item text-truncate" data-i18n="Analytics">Products</span>
+                        </a>
+                    </li>
+                    <li class="@yield('store_categories')">
+                        <a class="d-flex align-items-center" href="{{url('/admin/store/categories')}}">
+                            <i data-feather="circle"></i>
+                            <span class="menu-item text-truncate" data-i18n="Analytics">Categories</span>
+                        </a>
+                    </li>
+                    <li class="@yield('store_sizes')">
+                        <a class="d-flex align-items-center" href="{{url('/admin/store/sizes')}}">
+                            <i data-feather="circle"></i>
+                            <span class="menu-item text-truncate" data-i18n="Analytics">Sizes</span>
+                        </a>
+                    </li>
+                    <li class="@yield('store_colors')">
+                        <a class="d-flex align-items-center" href="{{url('/admin/store/colors')}}">
+                            <i data-feather="circle"></i>
+                            <span class="menu-item text-truncate" data-i18n="Analytics">Colors</span>
+                        </a>
+                    </li>
+                    <li class="@yield('store_orders')">
+                        <a class="d-flex align-items-center" href="{{url('/admin/store/orders')}}">
+                            <i data-feather="circle"></i>
+                            <span class="menu-item text-truncate" data-i18n="Analytics">Orders</span>
+                        </a>
+                    </li>
+                    <li class="@yield('store_payout')">
+                        <a class="d-flex align-items-center" href="{{ url('/admin/store/payout') }}">
+                            <i data-feather="circle"></i>
+                            <span class="menu-item text-truncate" data-i18n="Analytics">Payout</span>
                         </a>
                     </li>
                 </ul>

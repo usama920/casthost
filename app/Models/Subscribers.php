@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Cashier\Billable;
 
 class Subscribers extends Model
 {
-    use HasFactory;
+    use HasFactory, Billable;
     protected $table = 'subscribers';
     protected $fillable = [
         'email',
@@ -15,4 +16,6 @@ class Subscribers extends Model
         'status',
         'admin_status',
     ];
+
+
 }

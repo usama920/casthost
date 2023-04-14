@@ -51,6 +51,13 @@
                                             </div>
                                             <div class="col-md-6 col-12">
                                                 <div class="mb-1">
+                                                    <label class="form-label" for="email-id-column">Subscription Price</label>
+                                                    <input type="number" max="1000" min="5" step="0.1" class="form-control"
+                                                        value="{{ $user->SubscriptionInfo->price }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <div class="mb-1">
                                                     <label class="form-label" for="company-column">Facebook Link</label>
                                                     <input type="text" class="form-control" name="facebook"
                                                         value="{{ $user->facebook }}">

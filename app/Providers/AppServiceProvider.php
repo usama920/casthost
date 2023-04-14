@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Subscribers;
+use Stripe\StripeClient;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Cashier\Cashier;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Cashier::useCustomerModel(Subscribers::class);
+        // $this->app->singleton(StripeClient::class, function() {
+        //     return new StripeClient(env('STRIPE_SECRET'));
+        // });
     }
 }

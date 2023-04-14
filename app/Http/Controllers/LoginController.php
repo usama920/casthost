@@ -16,6 +16,13 @@ class LoginController extends Controller
         $page = DB::table('login_page')->first();
         return view('front.login', compact('page'));
     }
+    
+    public function LoginUsername($username)
+    {
+        $user = User::where(['username' => $username])->first();
+        $page = DB::table('login_page')->first();
+        return view('front.user_login', compact('page', 'user'));
+    }
 
     public function LoginCheck(Request $request)
     {

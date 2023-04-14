@@ -21,22 +21,37 @@
             @foreach ($podcasts as $podcast)
                 <div class="col-sm-8 col-md-6 col-lg-4 p-3">
                     <article class="our-blog-item">
-                        <video id="my-video{{ $podcast->id }}" onclick="check({{ $podcast->id }})"
-                            class="video-js vjs-matrix" controls preload="auto"
-                            poster="{{ url('storage/podcast/' . $podcast->id . '/images/' . $podcast->cover_image) }}"
-                            data-setup="{}">
-                            <source src="{{ url('storage/podcast/' . $podcast->id . '/' . $podcast->podcast) }}"
-                                type="video/mp4" />
-                        </video>
+                        @if ($podcast->paid == 1)
+                            <div
+                                class="video-js vjs-matrix vjs-paused vjs-controls-enabled vjs-workinghover vjs-v8 vjs-user-active my-video11-dimensions">
+                                <img src="{{ url('storage/podcast/' . $podcast->id . '/images/' . $podcast->cover_image) }}"
+                                    class="vjs-poster vjs-tech">
+                            </div>
+                        @else
+                            <video id="my-video{{ $podcast->id }}" onclick="check({{ $podcast->id }})"
+                                class="video-js vjs-matrix" controls preload="auto"
+                                poster="{{ url('storage/podcast/' . $podcast->id . '/images/' . $podcast->cover_image) }}"
+                                data-setup="{}">
+                                <source src="{{ url('storage/podcast/' . $podcast->id . '/' . $podcast->podcast) }}"
+                                    type="video/mp4" />
+                            </video>
+                        @endif
                         <div class="post-infos">
-                            <a href="{{ url('/podcast/download/' . $podcast->id) }}">
+                            @if ($podcast->paid == 1)
                                 <div class="download_container">
                                     <div class="bg-color-quaternary text-center h-100 text-white">
-                                        <i class="bi bi-download download_icon"></i>
-
+                                        <i class="bi bi-lock-fill download_icon"></i>
                                     </div>
                                 </div>
-                            </a>
+                            @else
+                                <a href="{{ url('/podcast/download/' . $podcast->id) }}">
+                                    <div class="download_container">
+                                        <div class="bg-color-quaternary text-center h-100 text-white">
+                                            <i class="bi bi-download download_icon"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            @endif
                             @php
                                 $day = date('d', strtotime($podcast->premiere_datetime));
                                 $month = date('M', strtotime($podcast->premiere_datetime));
@@ -47,8 +62,7 @@
                                 {{ $year }}
                             </span>
                             <h1 class="font-weight-normal mb-0">
-                                <a href="{{ url('/podcast/' . $podcast->slug) }}"
-                                    class="text-decoration-none">{{ $podcast->title }}</a>
+                                {{ $podcast->title }}
                             </h1>
                             <h4 class="mb-1">
                                 <div class="row">
@@ -62,8 +76,8 @@
                                         </a>
                                     </div>
                                     <div class="col-6">
-                                        <a href="{{ url('/' . $podcast->user->username) }}" class="text-decoration-none"
-                                            style="color: darkcyan;">
+                                        <a href="{{ url('/' . $podcast->user->username) }}"
+                                            class="text-decoration-none" style="color: darkcyan;">
                                             <i class="bi bi-person-circle font-normal">&nbsp;
                                                 <span
                                                     style="text-decoration:underline;">{{ $podcast->user->name }}</span>

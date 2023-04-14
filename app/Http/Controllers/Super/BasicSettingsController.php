@@ -17,7 +17,11 @@ class BasicSettingsController extends Controller
     public function BasicSettingsSave(Request $request)
     {
         $request->validate([
-            'site_title' => 'required'
+            'site_title' => 'required',
+            'store_commission' => 'required',
+            'subscription_commission' => 'required',
+            'stripe_transaction_fee' => 'required',
+            'stripe_transaction_commission' => 'required'
         ]);
         $existing_settings = BasicSettings::first();
         if ($request->hasFile('site_logo')) {
@@ -54,6 +58,10 @@ class BasicSettingsController extends Controller
             'twitter' =>  $request->twitter,
             'facebook' =>  $request->facebook,
             'instagram' =>  $request->instagram,
+            'store_commission' => $request->store_commission,
+            'subscription_commission' => $request->subscription_commission,
+            'stripe_transaction_fee' => $request->stripe_transaction_fee,
+            'stripe_transaction_commission' => $request->stripe_transaction_commission
         ]);
         return redirect()->back();
     }

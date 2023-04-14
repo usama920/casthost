@@ -16,6 +16,7 @@ use App\Models\UserContact;
 use App\Models\UserContactPage;
 use App\Models\UserHomePage;
 use App\Models\UserMessagesReply;
+use App\Models\UserStorePage;
 use App\Models\UserSubscribers;
 use App\Models\Views;
 use Carbon\Carbon;
@@ -247,6 +248,18 @@ class SuperDashboardController extends Controller
         }
         $user_home_page->save();
 
+        $user_store_page = new UserStorePage();
+        $user_store_page->user_id = $admin->id;
+        $user_store_page->image = null;
+        $file_path = public_path('project_assets/images/' . $default_home_page->image);
+        if (file_exists($file_path) && $default_home_page->image != null) {
+            $extension = pathinfo(public_path('project_assets/images/' . $default_home_page->image), PATHINFO_EXTENSION);
+            $image_name = time() . uniqid() . '.' . $extension;
+            File::copy(public_path('project_assets/images/' . $default_home_page->image), public_path('project_assets/images/' . $image_name));
+            $user_store_page->image = $image_name;
+        }
+        $user_store_page->save();
+
         return redirect()->back();
     }
 
@@ -353,6 +366,15 @@ class SuperDashboardController extends Controller
                 }
             }
             UserHomePage::where(['user_id' => $id])->delete();
+
+            $user_store_page = UserStorePage::where(['user_id' => $id])->first();
+            if ($user_store_page && $user_store_page->image !== null) {
+                $file_path = public_path('project_assets/images/' . $user_store_page->image);
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+            UserStorePage::where(['user_id' => $id])->delete();
 
             $user_contact_page = UserContactPage::where(['user_id' => $id])->first();
             if ($user_contact_page && $user_contact_page->image !== null) {

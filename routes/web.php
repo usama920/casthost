@@ -12,7 +12,19 @@ use App\Http\Controllers\Super\ContactController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\SupportController;
 use App\Http\Controllers\Admin\UserController;
-
+use App\Http\Controllers\Admin\AdminMessagesController;
+use App\Http\Controllers\Admin\AdminPageController;
+use App\Http\Controllers\Admin\AdminProfileController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\StoreCategoriesController;
+use App\Http\Controllers\Admin\StoreColorsController;
+use App\Http\Controllers\Admin\StoreOrdersController;
+use App\Http\Controllers\Admin\StorePaymentController;
+use App\Http\Controllers\Admin\StoreProductController;
+use App\Http\Controllers\Admin\StoreSizesController;
+use App\Http\Controllers\User\UserStorePaymentController;
+use App\Http\Controllers\User\UserStoreSizesController;
+use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\PodcastController;
 use App\Http\Controllers\User\ProfileController;
@@ -24,15 +36,18 @@ use App\Http\Controllers\Super\BasicSettingsController;
 use App\Http\Controllers\Super\SuperDashboardController;
 use App\Http\Controllers\Super\SuperPageController;
 use App\Http\Controllers\Super\SuperSupportController;
-use App\Http\Controllers\Admin\AdminMessagesController;
-use App\Http\Controllers\Admin\AdminPageController;
-use App\Http\Controllers\Admin\AdminProfileController;
+use App\Http\Controllers\User\UserStoreCategoriesController;
+use App\Http\Controllers\User\UserStoreColorsController;
+use App\Http\Controllers\User\UserStoreOrdersController;
+use App\Http\Controllers\User\UserStoreProductController;
 use Illuminate\Support\Facades\Route;
 
 
+Route::get('/createStripeAccountId', [PaymentController::class, 'createStripeAccountId']);
 Route::get('/', [HomeController::class, 'Home']);
 Route::get('/login', [LoginController::class, 'Login'])->name('login');
-Route::get('/subscriber/logout', [HomeController::class, 'SubscriberLogout']);
+Route::get('/subscriber/logout', [ HomeController::class, 'SubscriberLogout']);
+Route::get('/subscribe/paid/{user_id}', [HomeController::class, 'PaidSubscribe']);
 Route::post('/subscriber/verify', [HomeController::class, 'SubscriberVerify']);
 Route::post('/subscriber/verify/email', [HomeController::class, 'SubscriberVerifyEmail']);
 Route::post('/subscriber/verify/code', [HomeController::class, 'SubscriberVerifyCode']);
@@ -114,6 +129,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin_auth'], function () {
     Route::get('/pages/home', [AdminPageController::class, 'HomePage']);
     Route::post('/pages/home', [AdminPageController::class, 'HomePageSave']);
 
+    Route::get('/pages/store', [AdminPageController::class, 'StorePage']);
+    Route::post('/pages/store', [AdminPageController::class, 'StorePageSave']);
+
     Route::get('/pages/contact', [AdminPageController::class, 'ContactPage']);
     Route::post('/pages/contact', [AdminPageController::class, 'ContactPageSave']);
 
@@ -134,6 +152,45 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin_auth'], function () {
     Route::get('/message/detail/{id}', [AdminMessagesController::class, 'MessageDetail']);
     Route::post('/message/reply', [AdminMessagesController::class, 'MessageReply']);
 
+    Route::get('/store/add_product', [StoreProductController::class, 'AddProduct']);
+    Route::post('/store/add_product', [StoreProductController::class, 'SaveProduct']);
+    Route::get('/store/all_products', [StoreProductController::class, 'AllProducts']);
+    Route::get('/store/product/inactive/{id}', [StoreProductController::class, 'InactiveProduct']);
+    Route::get('/store/product/active/{id}', [StoreProductController::class, 'ActiveProduct']);
+    Route::get('/store/product/detail/{id}', [StoreProductController::class, 'ProductDetail']);
+    Route::get('/store/product/delete/{id}', [StoreProductController::class, 'ProductDelete']);
+    Route::post('/store/product/update', [StoreProductController::class, 'UpdateProduct']);
+    Route::get('/store/product/other_image/delete/{image_id}', [StoreProductController::class, 'DeleteOtherImage']);
+
+    Route::get('/store/categories', [StoreCategoriesController::class, 'Categories']);
+    Route::post('/store/category/add', [StoreCategoriesController::class, 'AddCategory']);
+    Route::get('/store/category/inactive/{id}', [StoreCategoriesController::class, 'InactiveCategory']);
+    Route::get('/store/category/active/{id}', [StoreCategoriesController::class, 'ActiveCategory']);
+    Route::post('/store/category/edit', [StoreCategoriesController::class, 'EditCategory']);
+    Route::get('/store/category/delete/{id}', [StoreCategoriesController::class, 'DeleteCategory']);
+
+    Route::get('/store/sizes', [StoreSizesController::class, 'Sizes']);
+    Route::post('/store/size/add', [StoreSizesController::class, 'AddSize']);
+    Route::get('/store/size/inactive/{id}', [StoreSizesController::class, 'InactiveSize']);
+    Route::get('/store/size/active/{id}', [StoreSizesController::class, 'ActiveSize']);
+    Route::post('/store/size/edit', [StoreSizesController::class, 'EditSize']);
+    Route::get('/store/size/delete/{id}', [StoreSizesController::class, 'DeleteSize']);
+
+    Route::get('/store/colors', [StoreColorsController::class, 'Colors']);
+    Route::post('/store/color/add', [StoreColorsController::class, 'AddColor']);
+    Route::get('/store/color/inactive/{id}', [StoreColorsController::class, 'InactiveColor']);
+    Route::get('/store/color/active/{id}', [StoreColorsController::class, 'ActiveColor']);
+    Route::post('/store/color/edit', [StoreColorsController::class, 'EditColor']);
+    Route::get('/store/color/delete/{id}', [StoreColorsController::class, 'DeleteColor']);
+
+    Route::get('/store/orders', [StoreOrdersController::class, 'Orders']);
+    Route::get('/store/order/detail/{id}', [StoreOrdersController::class, 'OrderDetail']);
+    Route::post('/store/order/detail/save', [StoreOrdersController::class, 'OrderDetailSave']);
+    
+    Route::get('/store/payout', [StorePaymentController::class, 'Payout']);
+    Route::get('/store/stripe/create', [StorePaymentController::class, 'CreatePayout']);
+    
+    
 });
 
 Route::group(['prefix' => 'users', 'middleware' => 'user_auth'], function () {
@@ -170,6 +227,45 @@ Route::group(['prefix' => 'users', 'middleware' => 'user_auth'], function () {
     Route::get('/messages/read', [UserMessagesController::class, 'ReadMessages']);
     Route::get('/message/detail/{id}', [UserMessagesController::class, 'MessageDetail']);
     Route::post('/message/reply', [UserMessagesController::class, 'MessageReply']);
+
+    Route::get('/store/add_product', [UserStoreProductController::class, 'AddProduct']);
+    Route::post('/store/add_product', [UserStoreProductController::class, 'SaveProduct']);
+    Route::get('/store/all_products', [UserStoreProductController::class, 'AllProducts']);
+    Route::get('/store/product/inactive/{id}', [UserStoreProductController::class, 'InactiveProduct']);
+    Route::get('/store/product/active/{id}', [UserStoreProductController::class, 'ActiveProduct']);
+    Route::get('/store/product/detail/{id}', [UserStoreProductController::class, 'ProductDetail']);
+    Route::get('/store/product/delete/{id}', [UserStoreProductController::class, 'ProductDelete']);
+    Route::post('/store/product/update', [UserStoreProductController::class, 'UpdateProduct']);
+    Route::get('/store/product/other_image/delete/{image_id}', [UserStoreProductController::class, 'DeleteOtherImage']);
+
+    Route::get('/store/categories', [UserStoreCategoriesController::class, 'Categories']);
+    Route::post('/store/category/add', [UserStoreCategoriesController::class, 'AddCategory']);
+    Route::get('/store/category/inactive/{id}', [UserStoreCategoriesController::class, 'InactiveCategory']);
+    Route::get('/store/category/active/{id}', [UserStoreCategoriesController::class, 'ActiveCategory']);
+    Route::post('/store/category/edit', [UserStoreCategoriesController::class, 'EditCategory']);
+    Route::get('/store/category/delete/{id}', [UserStoreCategoriesController::class, 'DeleteCategory']);
+
+    Route::get('/store/sizes', [UserStoreSizesController::class, 'Sizes']);
+    Route::post('/store/size/add', [UserStoreSizesController::class, 'AddSize']);
+    Route::get('/store/size/inactive/{id}', [UserStoreSizesController::class, 'InactiveSize']);
+    Route::get('/store/size/active/{id}', [UserStoreSizesController::class, 'ActiveSize']);
+    Route::post('/store/size/edit', [UserStoreSizesController::class, 'EditSize']);
+    Route::get('/store/size/delete/{id}', [UserStoreSizesController::class, 'DeleteSize']);
+
+    Route::get('/store/colors', [UserStoreColorsController::class, 'Colors']);
+    Route::post('/store/color/add', [UserStoreColorsController::class, 'AddColor']);
+    Route::get('/store/color/inactive/{id}', [UserStoreColorsController::class, 'InactiveColor']);
+    Route::get('/store/color/active/{id}', [UserStoreColorsController::class, 'ActiveColor']);
+    Route::post('/store/color/edit', [UserStoreColorsController::class, 'EditColor']);
+    Route::get('/store/color/delete/{id}', [UserStoreColorsController::class, 'DeleteColor']);
+
+    Route::get('/store/orders', [UserStoreOrdersController::class, 'Orders']);
+    Route::get('/store/order/detail/{id}', [UserStoreOrdersController::class, 'OrderDetail']);
+    Route::post('/store/order/detail/save', [UserStoreOrdersController::class, 'OrderDetailSave']);
+
+    Route::get('/store/payout', [UserStorePaymentController::class, 'Payout']);
+    Route::get('/store/stripe/create', [UserStorePaymentController::class, 'CreatePayout']);
+
 });
  
 Route::get('/superAdmin/login', [SuperDashboardController::class, 'Login']);
@@ -214,12 +310,35 @@ Route::group(['prefix' =>'superAdmin', 'middleware' => 'super_auth'], function (
 
     Route::get('/basic-settings', [BasicSettingsController::class, 'BasicSettings']);
     Route::post('/basic-settings', [BasicSettingsController::class, 'BasicSettingsSave']);
+
+
 });
+
+Route::group(['middleware' => 'subscriber_auth'], function () {
+    Route::get('/{username}/subscriber/profile', [SubscriberController::class, 'Orders']);
+    Route::get('/{username}/subscriber/orders', [SubscriberController::class, 'Orders']);
+    Route::post('/subscriber/order/detail', [SubscriberController::class, 'OrderDetail']);
+    Route::get('/{username}/subscriber/users_subscribed', [SubscriberController::class, 'UsersSubscribed']);
+    
+    Route::get('/{username}/cart', [HomeController::class, 'UserCartPage']);
+    Route::get('/{username}/checkout', [ StorePaymentController::class, 'UserCheckoutPage']);
+    Route::post('/{username}/checkout/done', [StorePaymentController::class, 'CheckoutDone']);
+});
+
 Route::get('/superAdmin/logout', [SuperDashboardController::class, 'SuperLogout']);
 
 Route::get('/rss/{username}', [HomeController::class, 'UserRSS']);
+Route::post('/store/update_cart', [ HomeController::class, 'UpdateCart']);
+Route::post( '/store/update_cart/quantity', [HomeController::class, 'UpdateCartQuantity']);
+Route::post('/store/update_cart/remove', [HomeController::class, 'RemoveCartProduct']);
 
-Route::get('/{username}', [HomeController::class, 'UserHomePage']);
+
+Route::get('/{username}', [ HomeController::class, 'UserHomePage']);
+Route::get('/{username}/login', [LoginController::class, 'LoginUsername']);
+Route::get('/{username}/store', [ HomeController::class, 'UserStorePage']);
+Route::get('/{username}/store/search', [HomeController::class, 'UserStoreSearch']);
+Route::get('/{username}/store/category/{category_id}', [HomeController::class, 'UserStorePageWithCategory']);
+Route::get('/{username}/store/{product_id}', [HomeController::class, 'UserStoreProductPage']);
 Route::get('/{username}/about', [HomeController::class, 'UserAboutPage']);
 Route::get('/{username}/contact', [HomeController::class, 'UserContactPage']);
 Route::get('/{username}/category/{category_id}', [HomeController::class, 'UserCategoryPage']);

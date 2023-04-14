@@ -75,6 +75,19 @@
                                     <div class="col-12">
                                         <div class="mb-1 row">
                                             <div class="col-sm-3">
+                                                <label class="form-label" for="basicSelect">Type</label>
+                                            </div>
+                                            <div class="col-sm-9">
+                                                <select class="form-select" id="basicSelect" name="paid" required>
+                                                    <option value="0">Un-Paid</option>
+                                                    <option value="1">Paid</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="mb-1 row">
+                                            <div class="col-sm-3">
                                                 <label class="col-form-label" for="email-id">Cover Image<br>[Min: 500 X 700]</label>
                                             </div>
                                             <div class="col-sm-9">

@@ -14,4 +14,9 @@ class UserSubscribers extends Model
         'user_id',
         'status',
     ];
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

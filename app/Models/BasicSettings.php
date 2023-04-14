@@ -16,6 +16,10 @@ class BasicSettings extends Model
         'twitter',
         'instagram',
         'facebook',
-        'phone'
+        'phone',
+        'store_commission',
+        'subscription_commission',
+        'stripe_transaction_fee',
+        'stripe_transaction_commission'
     ];
 }

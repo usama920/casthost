@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Categories;
+use App\Models\Podcast;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,21 +33,28 @@ class CategoriesController extends Controller
     {
         $request->validate([
             'title' =>  'required',
-            'id'    =>  'required'
+            'id'    =>  'required',
+            'paid' => 'required'
         ]);
-        Categories::where(['id' =>  $request->id, 'admin_id' => Auth::user()->id])->update([ 'title'    =>  $request->title]);
+        Categories::where(['id' =>  $request->id, 'admin_id' => Auth::user()->id])->update([ 
+            'title'    =>  $request->title,
+            'paid'    =>  $request->paid
+        ]);
+        Podcast::where(['category_id' => $request->id, 'user_id' => Auth::user()->id])->update([
+            'paid' => $request->paid
+        ]);
         return redirect()->back();
     }
 
     public function InactiveCategory($id)
     {
-        Categories::where('id', $id)->update(['status'   =>  0, 'admin_id' => Auth::user()->id]);
+        Categories::where(['id' => $id, 'admin_id' => Auth::user()->id])->update(['status'   =>  0]);
         return redirect()->back();
     }
 
     public function ActiveCategory($id)
     {
-        Categories::where('id', $id)->update(['status'   =>1, 'admin_id' => Auth::user()->id]);
+        Categories::where(['id' => $id, 'admin_id' => Auth::user()->id])->update(['status'   => 1]);
         return redirect()->back();
     }
 

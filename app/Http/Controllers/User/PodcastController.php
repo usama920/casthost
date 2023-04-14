@@ -101,6 +101,7 @@ class PodcastController extends Controller
         
         $request->validate([
             'title' =>  'required',
+            'paid' =>  'required',
             'category_id' =>  'required',
             'description'   =>  'required',
             'premiere_datetime' =>  'required'
@@ -113,6 +114,7 @@ class PodcastController extends Controller
         $podcast->title = $request->title;
         $podcast->slug = $request->title;
         $podcast->category_id = $request->category_id;
+        $podcast->paid = $request->paid;
         $podcast->description = $request->description;
         $podcast->premiere_datetime = $request->premiere_datetime;
         $podcast->cover_image = $request->cover_image;
@@ -169,6 +171,7 @@ class PodcastController extends Controller
         $request->validate([
             'title' =>  'required',
             'category_id' =>  'required',
+            'paid' =>  'required',
             'description'   =>  'required|min:50',
         ]);
         $existing_podcast = Podcast::find($request->id);
@@ -191,6 +194,7 @@ class PodcastController extends Controller
 
         $existing_podcast->title = $request->title;
         $existing_podcast->category_id = $request->category_id;
+        $existing_podcast->paid = $request->paid;
         $existing_podcast->description = $request->description;
         $existing_podcast->save();
 

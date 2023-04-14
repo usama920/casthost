@@ -23,6 +23,9 @@ class User extends Authenticatable
         'name',
         'role',
         'belongs_to',
+        'order_id',
+        'stripe_connect_id',
+        'completed_stripe_onboarding',
         'username',
         'memory_limit',
         'image',
@@ -32,7 +35,8 @@ class User extends Authenticatable
         'forgot_password_code',
         'twitter',
         'instagram',
-        'facebook'
+        'facebook',
+        'subscription_price_id'
     ];
 
     /**
@@ -48,6 +52,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Podcast::class)->orderBy('id', 'DESC');
     }
+    
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'user_id', 'id')->orderBy('id', 'DESC');
+    }
 
     public function subscribers()
     {
@@ -62,6 +71,11 @@ class User extends Authenticatable
            array_push($podcasts_ids, $podcast->id);
         }
         return Views::whereIn('podcast_id', $podcasts_ids);
+    }
+
+    public function SubscriptionInfo()
+    {
+        return $this->hasOne(SubscriptionPrice::class, 'id', 'subscription_price_id');
     }
 
 

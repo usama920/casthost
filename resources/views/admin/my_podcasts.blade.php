@@ -54,6 +54,7 @@
                                                 <th class="text-center">Views</th>
                                                 <th class="text-center">Downloads</th>
                                                 <th class="text-center">Premiere Date</th>
+                                                <th class="text-center">Type</th>
                                                 <th class="text-center">Status</th>
                                                 <th class="text-center">Actions</th>
                                             </tr>
@@ -67,6 +68,13 @@
                                                         <td class="text-center">{{ count($podcast->views) }}</td>
                                                         <td class="text-center">{{ count($podcast->downloads) }}</td>
                                                         <td class="text-center">{{ $podcast->premiere_datetime }}</td>
+                                                        <td class="text-center">
+                                                            @if ($podcast->paid == 1)
+                                                            Paid
+                                                            @else
+                                                            Un-Paid
+                                                            @endif
+                                                        </td>
                                                         <td class="text-center">
                                                             @if ($podcast->admin_status == 1)
                                                                 <a
