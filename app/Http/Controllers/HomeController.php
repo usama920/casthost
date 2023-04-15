@@ -82,7 +82,6 @@ class HomeController extends Controller
             Session::flash('alert-type', 'error');
             return redirect()->back();
         }
-        // prx(subscriber_id());
         $session = StorePaymentController::createCustomerSubscription($user_id);
         
         $already_subscribed = UserSubscribers::where(['subscriber_id' => subscriber_id(), 'user_id' => $user_id])->first();
@@ -110,7 +109,7 @@ class HomeController extends Controller
                 array_push($all_users, $user->id);
             }
             $products = Product::whereIn('user_id', $all_users)->where(['status' => 1])->with('category')->latest()->paginate(18);
-            $categories = StoreCategories::whereIn('user_id', $all_users)->get();
+            $categories = StoreCategories::whereIn('user_id', $all_users)->orderBy('title', 'ASC')->get();
             if($user->role == 1) {
                 $page = UserStorePage::where(['user_id' => $user->id])->first();
             } else {
@@ -133,7 +132,7 @@ class HomeController extends Controller
                 array_push($all_users, $user->id);
             }
             $products = Product::whereIn('user_id', $all_users)->where(['status' => 1, 'category_id' => $category_id])->with('category')->latest()->paginate(18);
-            $categories = StoreCategories::whereIn('user_id', $all_users)->get();
+            $categories = StoreCategories::whereIn('user_id', $all_users)->orderBy('title', 'ASC')->get();
             if ($user->role == 1) {
                 $page = UserStorePage::where(['user_id' => $user->id])->first();
             } else {
@@ -154,10 +153,12 @@ class HomeController extends Controller
             $all_users = [];
             $users = User::where(['belongs_to' => $user->belongs_to])->orWhere(['id' => $user->belongs_to])->get();
             foreach ($users as $user) {
-                array_push($all_users, $user->id);
+                if($user->stripe_connect_id != null && $user->completed_stripe_onboarding == 1) {
+                    array_push($all_users, $user->id);
+                }
             }
             $products = Product::whereIn('user_id', $all_users)->where(['status' => 1])->where('title', 'like', '%' . $request->s . '%')->with('category')->latest()->paginate(18);
-            $categories = StoreCategories::whereIn('user_id', $all_users)->get();
+            $categories = StoreCategories::whereIn('user_id', $all_users)->orderBy('title', 'ASC')->get();
             if ($user->role == 1) {
                 $page = UserStorePage::where(['user_id' => $user->id])->first();
             } else {

@@ -347,5 +347,14 @@ function purchasedSubscription($user_id) {
     } else {
         return false;
     }
+}
 
+function userStoreSaleAllowed($user_id)
+{
+    $user = User::find($user_id);
+    if($user && $user->stripe_connect_id != null && $user->completed_stripe_onboarding == 1) {
+        return true;
+    } else {
+        return false;
+    }
 }
