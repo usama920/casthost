@@ -255,7 +255,6 @@ class StorePaymentController extends Controller
     {
         $orders = Order::where(['subscriber_id' => subscriber_id(), 'status' => 0])->get();
         $stripe = new StripeClient(env('STRIPE_SECRET_KEY', null));
-        Stripe::setApiKey(env('STRIPE_SECRET_KEY', null));
         foreach ($orders as $order) {
             if ($order->stripe_session_id != null || $order->stripe_payment_intent != null) {
                 $session = $stripe->checkout->sessions->retrieve(
@@ -278,9 +277,10 @@ class StorePaymentController extends Controller
                         $product = Product::where(['id' => $item->product_id])->first();
                         $user = User::where(['id' => $product->user_id])->first();
                         if ($user->stripe_connect_id != null || $user->completed_stripe_onboarding == 1) {
+
                             $stripe->transfers->create(
                                 [
-                                    'amount' => $item_price - $margin,
+                                    'amount' => round($item_price - $margin),
                                     'currency' => 'usd',
                                     'destination' => $user->stripe_connect_id,
                                     'source_transaction' => $charge_id,
@@ -312,12 +312,12 @@ class StorePaymentController extends Controller
         $basicSettings = BasicSettings::first();
         $subscriber = Subscribers::where(['id' => subscriber_id()])->first();
         $user = User::with('SubscriptionInfo')->find($user_id);
-        $transaction_fee_percentage = ($basicSettings->stripe_transaction_fee/$user->SubscriptionInfo->price) * 100;
+        $transaction_fee_percentage = ($basicSettings->stripe_transaction_fee / $user->SubscriptionInfo->price) * 100;
         $total_application_fee = (int)$basicSettings->subscription_commission + $transaction_fee_percentage + (int)$basicSettings->stripe_transaction_commission;
         $session = $stripe->checkout->sessions->create([
             'customer' => $subscriber->stripe_id,
-            'success_url' => url('/'.$user->username),
-            'cancel_url' => url('/'.$user->username),
+            'success_url' => url('/' . $user->username),
+            'cancel_url' => url('/' . $user->username),
             'line_items' => [
                 [
                     'price' => $user->SubscriptionInfo->price_id,
@@ -330,7 +330,7 @@ class StorePaymentController extends Controller
             ],
             'mode' => 'subscription'
         ]);
-        return ['url' => $session->url, 'session_id' => $session->id ];
+        return ['url' => $session->url, 'session_id' => $session->id];
     }
 
     public static function createPrice($price)
