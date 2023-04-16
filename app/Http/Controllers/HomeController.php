@@ -82,20 +82,19 @@ class HomeController extends Controller
             Session::flash('alert-type', 'error');
             return redirect()->back();
         }
-        $session = StorePaymentController::createCustomerSubscription($user_id);
         
         $already_subscribed = UserSubscribers::where(['subscriber_id' => subscriber_id(), 'user_id' => $user_id])->first();
         if($already_subscribed) {
-            $already_subscribed->stripe_session_id = $session['session_id'];
-            $already_subscribed->save();
         } else {
-            $newSubscription = new UserSubscribers();
-            $newSubscription->subscriber_id = subscriber_id();
-            $newSubscription->user_id = $user_id;
-            $newSubscription->stripe_session_id = $session['session_id'];
-            $newSubscription->status = 1;
-            $newSubscription->save();
+            $already_subscribed = new UserSubscribers();
+            $already_subscribed->subscriber_id = subscriber_id();
+            $already_subscribed->user_id = $user_id;
+            $already_subscribed->status = 1;
         }
+        $already_subscribed->save();
+        $session = StorePaymentController::createCustomerSubscription($user_id);
+        $already_subscribed->stripe_session_id = $session['session_id'];
+        $already_subscribed->save();
         return redirect($session['url']);
     }
 

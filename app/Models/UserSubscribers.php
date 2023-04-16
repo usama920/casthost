@@ -12,7 +12,11 @@ class UserSubscribers extends Model
     protected $fillable = [
         'subscriber_id',
         'user_id',
-        'status',
+        'paid',
+        'stripe_session_id',
+        'stripe_invoice_id',
+        'stripe_sub_id',
+        'status'
     ];
 
     public function user()
