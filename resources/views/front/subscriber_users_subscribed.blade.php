@@ -50,10 +50,10 @@
                                         {{ ++$key }}
                                     </td>
                                     <td>
-                                        {{$user->name}}
+                                        {{$user->user->name}}
                                     </td>
                                     <td>
-                                        <a href="{{url('/'.$user->username)}}" class="btn btn-sm btn-outline btn-success">Profile</a>
+                                        <a href="{{url('/'.$user->user->username)}}" class="btn btn-sm btn-outline btn-success">Profile</a>
                                     </td>
                                     <td>
                                         @if($user->paid == 1)
