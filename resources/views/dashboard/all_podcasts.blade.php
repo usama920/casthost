@@ -24,6 +24,37 @@
                     </div>
                 </div>
             </div>
+            @if (auth()->user()->stripe_connect_id == null || auth()->user()->completed_stripe_onboarding == 0)
+                <div class="content-body">
+                    <section id="basic-horizontal-layouts">
+                        <div class="row">
+                            <div class="col-md-12 col-12">
+                                <div class="card">
+                                    <div class="card-header border-bottom p-1">
+                                        <div class="dt-action-buttons">
+                                            <div class="dt-buttons d-inline-flex">
+                                                <a href="{{ url('/users/store/stripe/create') }}"
+                                                    class="dt-button create-new btn btn-primary"><span><svg
+                                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                            class="feather feather-plus me-50 font-small-4">
+                                                            <line x1="12" y1="5" x2="12"
+                                                                y2="19"></line>
+                                                            <line x1="5" y1="12" x2="19"
+                                                                y2="12"></line>
+                                                        </svg>Connect Stripe</span></a>
+                                            </div>
+                                            Your Paid Podcasts will not be available for subscribers until you connect to
+                                            your stripe account.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            @endif
             <div class="content-body">
                 <section id="basic-horizontal-layouts">
                     <a class="dt-button create-new btn btn-success" href="{{url('/users/podcasts/export')}}"><span>Export</span></a>

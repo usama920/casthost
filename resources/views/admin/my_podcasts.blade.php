@@ -25,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            @if (!auth()->user()->stripe_connect_id == null || auth()->user()->completed_stripe_onboarding == 0)
+            @if (auth()->user()->stripe_connect_id == null || auth()->user()->completed_stripe_onboarding == 0)
                 <div class="content-body">
                     <section id="basic-horizontal-layouts">
                         <div class="row">
