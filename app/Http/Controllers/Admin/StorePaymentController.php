@@ -10,8 +10,10 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\StoreCategories;
 use App\Models\Subscribers;
+use App\Models\SubscriptionPayout;
 use App\Models\User;
 use App\Models\UserStorePage;
+use App\Models\UserSubscribers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -52,6 +54,29 @@ class StorePaymentController extends Controller
         }
         $items = OrderItem::where(['user_id' => Auth::user()->id])->orderBy('created_at', 'DESC')->get();
         return view('admin.store_payout', compact('user', 'items'));
+    }
+    
+    public function SubscriptionPayout()
+    {
+        $user = User::find(Auth::user()->id);
+        if ($user->stripe_connect_id != null) {
+            try {
+                $account = $this->stripe->accounts->retrieve($user->stripe_connect_id);
+                if ($account->charges_enabled) {
+                    $user->completed_stripe_onboarding = 1;
+                    $user->save();
+                } else {
+                    $user->completed_stripe_onboarding = 0;
+                    $user->save();
+                }
+            } catch (\Throwable $th) {
+                $user->completed_stripe_onboarding = 0;
+                $user->stripe_connect_id = null;
+                $user->save();
+            }
+        }
+        $items = SubscriptionPayout::where(['user_id' => Auth::user()->id])->orderBy('created_at', 'DESC')->get();
+        return view('admin.subscription_payout', compact('user', 'items'));
     }
 
     public function CreatePayout()
@@ -343,5 +368,19 @@ class StorePaymentController extends Controller
             'product' => env('PRODUCT_ID')
         ]);
         return $response->id;
+    }
+
+    public static function cancelSubscription($id)
+    {
+        $stripe = new StripeClient(env('STRIPE_SECRET_KEY', null));
+        $userSubscriber = UserSubscribers::where(['id' => $id, 'subscriber_id' => subscriber_id()])->first();
+        if($userSubscriber) {
+            if($userSubscriber->paid == 1 && $userSubscriber->stripe_sub_id != null) {
+                $stripe->subscriptions->cancel(
+                    $userSubscriber->stripe_sub_id,
+                    []
+                );
+            }
+        }
     }
 }

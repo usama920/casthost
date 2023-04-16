@@ -189,6 +189,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin_auth'], function () {
     
     Route::get('/store/payout', [StorePaymentController::class, 'Payout']);
     Route::get('/store/stripe/create', [StorePaymentController::class, 'CreatePayout']);
+
+    Route::get('/subscription/payout', [StorePaymentController::class, 'SubscriptionPayout']);
+
     
     
 });
@@ -265,6 +268,8 @@ Route::group(['prefix' => 'users', 'middleware' => 'user_auth'], function () {
 
     Route::get('/store/payout', [UserStorePaymentController::class, 'Payout']);
     Route::get('/store/stripe/create', [UserStorePaymentController::class, 'CreatePayout']);
+
+    Route::get('/subscription/payout', [UserStorePaymentController::class, 'SubscriptionPayout']);
 
 });
  

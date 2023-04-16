@@ -33,7 +33,6 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
-use Stripe\StripeClient;
 
 class HomeController extends Controller
 {
@@ -634,6 +633,7 @@ class HomeController extends Controller
     {
         $subscriber_id = subscriber_id();
         if($subscriber_id != null) {
+            StorePaymentController::cancelSubscription($user_id);
             UserSubscribers::where(['user_id' => $user_id, 'subscriber_id' => $subscriber_id])->delete();
             Session::flash('message', 'User unsubscribed!');
             Session::flash('alert-type', 'success');
@@ -644,9 +644,7 @@ class HomeController extends Controller
     public function SubscriberUser($user_id)
     {
         $subscriber_id = subscriber_id();
-        
         if ($subscriber_id != null) {
-
             $existing_user_subscriber = UserSubscribers::where(['user_id' => $user_id, 'subscriber_id' => $subscriber_id])->first();
             if ($existing_user_subscriber) {
                 Session::flash('message', 'Already subscribed!');

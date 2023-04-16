@@ -67,7 +67,7 @@
                             </video>
                         @endif
                         <div class="post-infos">
-                            @if ($podcast->paid == 1)
+                            @if ($podcast->paid == 1 && !$purchasedSubscription)
                                 @if (is_subscriber())
                                     <div class="download_container" data-bs-toggle="modal"
                                         data-bs-target="#paidFormModal">

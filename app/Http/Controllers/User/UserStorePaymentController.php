@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\StoreCategories;
+use App\Models\SubscriptionPayout;
 use App\Models\User;
 use App\Models\UserStorePage;
 use Illuminate\Http\Request;
@@ -51,6 +52,29 @@ class UserStorePaymentController extends Controller
         }
         $items = OrderItem::where(['user_id' => Auth::user()->id])->orderBy('created_at', 'DESC')->get();
         return view('dashboard.store_payout', compact('user', 'items'));
+    }
+    
+    public function SubscriptionPayout()
+    {
+        $user = User::find(Auth::user()->id);
+        if ($user->stripe_connect_id != null) {
+            try {
+                $account = $this->stripe->accounts->retrieve($user->stripe_connect_id);
+                if ($account->charges_enabled) {
+                    $user->completed_stripe_onboarding = 1;
+                    $user->save();
+                } else {
+                    $user->completed_stripe_onboarding = 0;
+                    $user->save();
+                }
+            } catch (\Throwable $th) {
+                $user->completed_stripe_onboarding = 0;
+                $user->stripe_connect_id = null;
+                $user->save();
+            }
+        }
+        $items = SubscriptionPayout::where(['user_id' => Auth::user()->id])->orderBy('created_at', 'DESC')->get();
+        return view('dashboard.store_subscription', compact('user', 'items'));
     }
 
     public function CreatePayout()

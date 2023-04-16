@@ -50,10 +50,10 @@
                                         {{ ++$key }}
                                     </td>
                                     <td>
-                                        {{ $user->user->name }}
+                                        {{$user->name}}
                                     </td>
                                     <td>
-                                        {{ $user->user->username }}
+                                        <a href="{{url('/'.$user->username)}}" class="btn btn-sm btn-outline btn-success">Profile</a>
                                     </td>
                                     <td>
                                         @if($user->paid == 1)
@@ -63,10 +63,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        {{-- <button class="btn btn-modern btn-primary" data-bs-toggle="modal" data-bs-target="#largeModal">
-                                            Launch Large Modal
-                                        </button> --}}
-                                        <button class="btn btn-sm btn-outline btn-danger" data-bs-toggle="modal" onclick="unsubscribeUser({{$user->id, $user->paid}})" data-bs-target="#formModal">Un-Subscribe</button>
+                                        <button class="btn btn-sm btn-outline btn-danger" data-bs-toggle="modal" onclick="unsubscribeUser({{$user->id}}, {{$user->paid}})" data-bs-target="#formModal">Un-Subscribe</button>
 
                                     </td>
                                 </tr>

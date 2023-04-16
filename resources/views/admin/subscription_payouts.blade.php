@@ -1,6 +1,6 @@
 @extends('admin.layout.admin_master')
-@section('page_title', 'Store Payout')
-@section('store_payout', 'active')
+@section('page_title', 'Subscription Payout')
+@section('subscription_payout', 'active')
 @section('content')
 
 <div class="app-content content ">
@@ -11,12 +11,12 @@
             <div class="content-header-left col-md-9 col-12 mb-2">
                 <div class="row breadcrumbs-top">
                     <div class="col-12">
-                        <h2 class="content-header-title float-start mb-0">Store Payout</h2>
+                        <h2 class="content-header-title float-start mb-0">Subscription Payouts</h2>
                         <div class="breadcrumb-wrapper">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{url('/admin')}}">Home</a>
                                 </li>
-                                <li class="breadcrumb-item"><a href="{{url('/admin/store/payout')}}">Store Payout</a>
+                                <li class="breadcrumb-item"><a href="{{url('/admin/subscription/payout')}}">Subscription Payout</a>
                                 </li>
                             </ol>
                         </div>
@@ -60,7 +60,6 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Product Name</th>
                                             <th class="text-center">Price($)</th>
                                             <th class="text-center">Payout($)</th>
                                             <th class="text-center">Date & Time</th>
@@ -71,15 +70,14 @@
                                         @foreach ($items as $key => $item)
                                         <tr>
                                             <td>{{++$key}}</td>
-                                            <td>{{$item->product_name}}</td>
-                                            <td class="text-center">{{$item->price * $item->quantity}}</td>
-                                            <td class="text-center">{{$item->user_payout}}</td>
+                                            <td class="text-center">{{$item->price}}</td>
+                                            <td class="text-center">{{$item->payout}}</td>
                                             <td class="text-center">{{$item->created_at}}</td>
                                         </tr>
                                         @endforeach
                                         @else
                                         <tr>
-                                            <td colspan="5" class="text-center">
+                                            <td colspan="4" class="text-center">
                                                 No Data Found.
                                             </td>
                                         </tr>
