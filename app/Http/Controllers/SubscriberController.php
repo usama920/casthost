@@ -42,7 +42,7 @@ class SubscriberController extends Controller
         } else {
             return response()->json(['status' => 'status']);
         }
-    }
+    } 
 
     function UsersSubscribed($username)
     {

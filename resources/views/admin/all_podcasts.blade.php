@@ -25,6 +25,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="content-body">
                 <section id="basic-horizontal-layouts">
                     <div class="row">
