@@ -12,6 +12,7 @@ use App\Models\StoreCategories;
 use App\Models\SubscriptionPayout;
 use App\Models\User;
 use App\Models\UserStorePage;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -51,7 +52,9 @@ class UserStorePaymentController extends Controller
             }
         }
         $items = OrderItem::where(['user_id' => Auth::user()->id])->orderBy('created_at', 'DESC')->get();
-        return view('dashboard.store_payout', compact('user', 'items'));
+        $total_payout = $items->sum('user_payout');
+        $current_month_payout = $items->where('created_at', '>', Carbon::now()->month())->sum('user_payout');
+        return view('dashboard.store_payout', compact('user','items', 'total_payout', 'current_month_payout'));
     }
     
     public function SubscriptionPayout()
@@ -74,7 +77,9 @@ class UserStorePaymentController extends Controller
             }
         }
         $items = SubscriptionPayout::where(['user_id' => Auth::user()->id])->orderBy('created_at', 'DESC')->get();
-        return view('dashboard.subscription_payout', compact('user', 'items'));
+        $total_payout = $items->sum('payout');
+        $current_month_payout = $items->where('created_at', '>', Carbon::now()->month())->sum('payout');
+        return view('dashboard.subscription_payout', compact('user','items', 'total_payout', 'current_month_payout'));
     }
 
     public function CreatePayout()

@@ -51,6 +51,37 @@
         </div>
 
         <div class="content-body">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div class="avatar bg-light-info p-50 mb-1">
+                                    <div class="avatar-content">
+                                        <i data-feather="dollar-sign" class="font-medium-5"></i>
+                                    </div>
+                                </div>
+                                <h2 class="fw-bolder">{{ $total_payout }}</h2>
+                                <p class="card-text">Total Payouts</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div class="avatar bg-light-info p-50 mb-1">
+                                    <div class="avatar-content">
+                                        <i data-feather="dollar-sign" class="font-medium-5"></i>
+                                    </div>
+                                </div>
+                                <h2 class="fw-bolder">{{ $current_month_payout }}</h2>
+                                <p class="card-text">Current Month Payout</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        <div class="content-body">
             <section id="basic-horizontal-layouts">
                 <div class="row">
                     <div class="col-md-12 col-12">

@@ -10,7 +10,9 @@
                     <div class="user-nav d-sm-flex d-none"><span class="user-name fw-bolder">Owner</span><span class="user-status">Admin</span></div><span class="avatar"><img class="round" src="{{asset('admin_assets/images/portrait/small/avatar-s-11.jpg')}}" alt="avatar" height="40" width="40"><span class="avatar-status-online"></span></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
+                    @if(is_super_admin())
                     <a class="dropdown-item" href="{{url('/superAdmin/admins')}}"><i data-feather='trending-up'></i> Super Admin</a>
+                    @endif
                     <a class="dropdown-item" href="{{url('/logout')}}"><i class="me-50" data-feather="power"></i> Logout</a>
                 </div>
             </li>
