@@ -76,7 +76,7 @@ class StorePaymentController extends Controller
             }
         }
         $items = SubscriptionPayout::where(['user_id' => Auth::user()->id])->orderBy('created_at', 'DESC')->get();
-        return view('admin.subscription_payout', compact('user', 'items'));
+        return view('admin.subscription_payouts', compact('user', 'items'));
     }
 
     public function CreatePayout()
