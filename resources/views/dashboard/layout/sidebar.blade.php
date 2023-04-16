@@ -113,7 +113,7 @@
                 </ul>
             </li>
             <li class="@yield('subscription_payout')">
-                <a class="d-flex align-items-center" href="{{url('/admin/subscription/payout')}}">
+                <a class="d-flex align-items-center" href="{{url('/users/subscription/payout')}}">
                     <i data-feather='sidebar'></i>
                     <span class="menu-title text-truncate" data-i18n="Email">Subscription Payouts</span>
                 </a>

@@ -92,7 +92,6 @@
                                 </a>
                             @endif
                             @php
-                                
                                 $day = date('d', strtotime($podcast->premiere_datetime));
                                 $month = date('M', strtotime($podcast->premiere_datetime));
                                 $year = date('Y', strtotime($podcast->premiere_datetime));
