@@ -1,5 +1,4 @@
 @section('page_title', 'Login or Subscribe')
-@section('navbar_login', 'active')
 @include('front.user_layout.header')
 <section class="page-header page-header-modern page-header-background page-header-background-sm" style="background-image: url({{asset('project_assets/images/'.$page->image)}});">
     <div class="container">

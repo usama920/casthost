@@ -136,19 +136,23 @@
                                                             </a>
                                                         </li>
                                                     @endif
-                                                    <li>
-                                                        <a class="dropdown-item @yield('navbar_login')"
-                                                            href="{{ url('/logout') }}">
-                                                            Logout
-                                                        </a>
-                                                    </li>
-                                                @elseif (is_subscriber())
+                                                @endif
+                                                @if (is_subscriber())
                                                     <li>
                                                         <a class="dropdown-item @yield('navbar_profile')"
                                                             href="{{url('/'.$user->username.'/subscriber/profile')}}">
                                                             Profile
                                                         </a>
                                                     </li>
+                                                @endif
+                                                @if(any_logged_in())
+                                                <li>
+                                                        <a class="dropdown-item @yield('navbar_login')"
+                                                            href="{{ url('/logout') }}">
+                                                            Logout
+                                                        </a>
+                                                    </li>
+                                                @elseif (is_subscriber())
                                                     <li>
                                                         <a class="dropdown-item @yield('navbar_login')"
                                                             href="{{ url('/subscriber/logout') }}">
@@ -158,8 +162,8 @@
                                                 @else
                                                     <li>
                                                         <a class="dropdown-item @yield('navbar_login')"
-                                                            href="{{ url('/login') }}">
-                                                            Login
+                                                            href="{{ url($user->username.'/login') }}">
+                                                            Logout
                                                         </a>
                                                     </li>
                                                 @endif

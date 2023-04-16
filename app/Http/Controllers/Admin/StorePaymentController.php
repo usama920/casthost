@@ -282,7 +282,7 @@ class StorePaymentController extends Controller
         $total_application_fee = (int)$basicSettings->subscription_commission + $transaction_fee_percentage + (int)$basicSettings->stripe_transaction_commission;
         $session = $stripe->checkout->sessions->create([
             'customer' => $subscriber->stripe_id,
-            'success_url' => url('/' . $user->username),
+            'success_url' => url('/' . $user->username. '/subscriber/users_subscribed'),
             'cancel_url' => url('/' . $user->username),
             'line_items' => [
                 [
