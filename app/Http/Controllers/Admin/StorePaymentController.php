@@ -373,7 +373,7 @@ class StorePaymentController extends Controller
     public static function cancelSubscription($id)
     {
         $stripe = new StripeClient(env('STRIPE_SECRET_KEY', null));
-        $userSubscriber = UserSubscribers::where(['id' => $id, 'subscriber_id' => subscriber_id()])->first();
+        $userSubscriber = UserSubscribers::where(['user_id' => $id, 'subscriber_id' => subscriber_id()])->first();
         if($userSubscriber) {
             if($userSubscriber->paid == 1 && $userSubscriber->stripe_sub_id != null) {
                 $stripe->subscriptions->cancel(

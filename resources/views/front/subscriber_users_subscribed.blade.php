@@ -63,7 +63,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline btn-danger" data-bs-toggle="modal" onclick="unsubscribeUser({{$user->id}}, {{$user->paid}})" data-bs-target="#formModal">Un-Subscribe</button>
+                                        <button class="btn btn-sm btn-outline btn-danger" data-bs-toggle="modal" onclick="unsubscribeUser({{$user->user_id}}, {{$user->paid}})" data-bs-target="#formModal">Un-Subscribe</button>
 
                                     </td>
                                 </tr>
