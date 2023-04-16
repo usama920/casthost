@@ -18,8 +18,8 @@
                 <h1 class="font-weight-normal text-12 m-0 pb-2">{{ $user->name }}</h1><br>
                 @if (is_subscriber())
                     @if (is_user_subscriber($user->id))
-                        <a href="{{ url('/unsubscribe/' . $user->id) }}"
-                            class="btn btn-outline btn-danger mb-2">Unsubscribe</a>
+                        <button class="btn btn-outline btn-success mb-2" data-bs-toggle="modal"
+                        data-bs-target="#unsubscribeFormModal">Un-Subscribe</button>
                     @else
                         <a href="{{ url('/subscribe/' . $user->id) }}"
                             class="btn btn-outline btn-success mb-2">Subscribe</a>
@@ -236,6 +236,31 @@
     </div>
 @endif
 
+
+<div class="modal fade" id="unsubscribeFormModal" tabindex="-1" role="dialog" aria-labelledby="unsubscribeFormModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="unsubscribeFormModalLabel">Confirmation</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                @if($purchasedSubscription)
+                <p>After unsubscribing, you won't be able to get access of premium content provided by this user and later on if you decided to subscribe again, you will again have to pay subscription fee. Are you sure you want to unsibscribe?</p>
+                @else
+                <p>After unsubscribing, you won't be able to get updates regarding new podcasts by this user.  Are you sure you want to unsubscribe?</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <a href="{{ url('/unsubscribe/' . $user->id) }}" id="unsubscribeLink" class="btn btn-primary">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <style>
     .vjs-matrix {
         width: 100% !important;
@@ -351,6 +376,8 @@
             $("#show_less_section" + id).css("display", "none");
         }
     };
+
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
     integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous" async>

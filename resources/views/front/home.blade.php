@@ -22,11 +22,13 @@
                 <div class="col-sm-8 col-md-6 col-lg-4 p-3">
                     <article class="our-blog-item">
                         @if ($podcast->paid == 1)
+                        <a href="{{ url('/' . $podcast->user->username) }}">
                             <div
                                 class="video-js vjs-matrix vjs-paused vjs-controls-enabled vjs-workinghover vjs-v8 vjs-user-active my-video11-dimensions">
                                 <img src="{{ url('storage/podcast/' . $podcast->id . '/images/' . $podcast->cover_image) }}"
                                     class="vjs-poster vjs-tech">
                             </div>
+                        </a>
                         @else
                             <video id="my-video{{ $podcast->id }}" onclick="check({{ $podcast->id }})"
                                 class="video-js vjs-matrix" controls preload="auto"
@@ -38,11 +40,13 @@
                         @endif
                         <div class="post-infos">
                             @if ($podcast->paid == 1)
-                                <div class="download_container">
-                                    <div class="bg-color-quaternary text-center h-100 text-white">
-                                        <i class="bi bi-lock-fill download_icon"></i>
+                                <a href="{{ url('/' . $podcast->user->username) }}">
+                                    <div class="download_container">
+                                        <div class="bg-color-quaternary text-center h-100 text-white">
+                                            <i class="bi bi-lock-fill download_icon"></i>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             @else
                                 <a href="{{ url('/podcast/download/' . $podcast->id) }}">
                                     <div class="download_container">

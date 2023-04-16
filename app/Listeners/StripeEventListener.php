@@ -17,7 +17,7 @@ class StripeEventListener
             if (isset($event->payload["data"]["object"]["subscription"])) {
                 $sub_id = $event->payload["data"]["object"]["subscription"];
                 $userSubscriber = UserSubscribers::where(['stripe_sub_id' => $sub_id])->first();
-                if($userSubscriber) {
+                if($userSubscriber && $event->payload["data"]["object"]["amount_paid"] > 0) {
                     $payout = new SubscriptionPayout();
                     $payout->user_id = $userSubscriber->user_id;
                     $payout->price = $event->payload["data"]["object"]["amount_paid"]/100;
