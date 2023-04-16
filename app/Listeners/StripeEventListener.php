@@ -45,15 +45,13 @@ class StripeEventListener
         }
 
         if ($event->payload['type'] === 'customer.subscription.deleted') {
-            if ($event->payload["data"]["object"]["mode"] == "subscription" && $event->payload["data"]["object"]["payment_status"] == "paid") {
-                $userSubscriber = UserSubscribers::where([
-                    'stripe_sub_id' => $event->payload["data"]["object"]["id"]
-                ])->first();
-                if ($userSubscriber) {
-                    UserSubscribers::where(['stripe_sub_id' => $event->payload["data"]["object"]["id"]])->update([
-                        'paid' => 0
-                    ]);
-                }
+            $userSubscriber = UserSubscribers::where([
+                'stripe_sub_id' => $event->payload["data"]["object"]["id"]
+            ])->first();
+            if ($userSubscriber) {
+                UserSubscribers::where(['stripe_sub_id' => $event->payload["data"]["object"]["id"]])->update([
+                    'paid' => 0
+                ]);
             }
         }
     }

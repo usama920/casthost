@@ -116,65 +116,6 @@ class StorePaymentController extends Controller
 
     public function UserCheckoutPage($username)
     {
-        // $charge = Charge::create(array(
-        //     "amount" => 10000,
-        //     "currency" => "usd",
-        //     "source" => "tok_visa",
-        //     "transfer_group" => "ORDER10",
-        // ));
-        // prx($charge);
-
-        // $transfer = $this->stripe->transfers->create(
-        //     [
-        //         'amount' => 7000,
-        //         'currency' => 'usd',
-        //         'destination' => 'acct_1MtbtaBCZum4ka3I',
-        //         'source_transaction' => $charge->id,
-        //         'transfer_group' => 'ORDER10',
-        //         ]
-        //     );
-        // prx($transfer);
-
-
-
-
-        // prx($this->stripe->balance->retrieve([]));
-        // $payout = Payout::create([
-        //     'amount' => 1000,
-        //     'currency' => 'usd',
-        // ], [
-        //     'stripe_account' => 'acct_1MtbtaBCZum4ka3I',
-        // ]);
-        // prx($payout);
-        // $intent = $this->stripe->paymentIntents->create(
-        //     ['amount' => 10000, 'currency' => 'usd', 'transfer_group' => 'ORDER10']
-        // );
-        // $this->stripe->accounts->update(
-        //     'acct_1MtbtaBCZum4ka3I',
-        //     ['settings' => ['payouts' => ['schedule' => ['interval' => 'manual']]]]
-        // );
-        // $transfer = $this->stripe->transfers->create(
-        //     [
-        //         'amount' => 7000,
-        //         'currency' => 'usd',
-        //         'destination' => 'acct_1MtbtaBCZum4ka3I',
-        //         'transfer_group' => 'ORDER10',
-        //         ]
-        //     );
-        //     prx($transfer);
-
-
-
-        // $intent = $this->stripe->paymentIntents->retrieve(
-        //     'pi_3MuJ2QB23sC6EPYt0cG6bZ61',
-        //     []
-        // );
-        // $session = $this->stripe->checkout->sessions->retrieve(
-        //     'cs_test_b1uCjgG0U1li26hlQ4pIThrua59y4ia8U2GDd7qXhCdXkawXkULU80EFS6',
-        //     []
-        // );
-        // prx($intent->charges->data[0]->id);
-
         Session::put('other_username', $username);
         if (!is_subscriber()) {
             return redirect('/login');
