@@ -52,7 +52,7 @@
                                             <div class="col-md-6 col-12">
                                                 <div class="mb-1">
                                                     <label class="form-label" for="email-id-column">Subscription Price</label>
-                                                    <input type="number" max="1000" min="5" step="0.1" class="form-control"
+                                                    <input type="number" max="1000" min="5" step="0.1" class="form-control" name="price"
                                                     @if($user->subscription_price_id != null)
                                                         value="{{ $user->SubscriptionInfo->price }}"
                                                     @endif
