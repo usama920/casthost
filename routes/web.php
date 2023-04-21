@@ -214,6 +214,12 @@ Route::group(['prefix' => 'users', 'middleware' => 'user_auth'], function () {
     Route::post('/podcast/update', [PodcastController::class, 'UpdatePodcast']);
     Route::get('/podcast/delete/{id}', [PodcastController::class, 'DeletePodcast']);
 
+    Route::get('/podcasts/distribution', [PodcastController::class, 'PodcastsDistribution']);
+    Route::get('/podcasts/distribution/google_podcasts', [PodcastController::class, 'GooglePodcastsDistribution']);
+    Route::post('/podcasts/distribution/google_podcasts/save', [PodcastController::class, 'GooglePodcastsDistributionSave']);
+
+    Route::get('/podcasts/distribution/spotify', [PodcastController::class, 'SpotifyDistribution']);
+
     Route::get('/profile', [ProfileController::class, 'Profile']);
     Route::post('/profile', [ProfileController::class, 'SaveProfile']);
 

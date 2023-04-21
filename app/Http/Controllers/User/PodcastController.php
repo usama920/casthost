@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Exports\UserDashboardPodcastsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Categories;
+use App\Models\GooglePodcasts;
 use App\Models\Podcast;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
@@ -66,7 +67,6 @@ class PodcastController extends Controller
 
     public function UploadPodcast(Request $request)
     {
-        // prx($request->file('podcast'));
         if ($request->hasFile('podcast')) {
             $file = $request->file('podcast');
             $filename = $file->getClientOriginalName();
@@ -231,5 +231,41 @@ class PodcastController extends Controller
     {
         Podcast::where(['id' => $id])->update(['status' => 1]);
         return redirect()->back();
+    }
+
+    public function PodcastsDistribution()
+    {
+        $google_podcasts = GooglePodcasts::where(['user_id' => Auth::user()->id])->first();
+        return view('dashboard.podcasts_distribution', compact('google_podcasts'));
+    }
+    
+    public function GooglePodcastsDistribution()
+    {
+        $google_podcasts = GooglePodcasts::where(['user_id' => Auth::user()->id])->first();
+        return view('dashboard.google_podcasts_distribution', compact('google_podcasts'));
+    }
+    
+    public function GooglePodcastsDistributionSave(Request $request)
+    {
+        $request->validate([
+            'url' => 'required'
+        ]);
+        $google_podcasts = GooglePodcasts::where(['user_id' => Auth::user()->id])->first();
+        if($google_podcasts) {
+            $google_podcasts->url = $request->url;
+            $google_podcasts->save();
+        } else {
+            $google_podcasts = new GooglePodcasts();
+            $google_podcasts->user_id = Auth::user()->id;
+            $google_podcasts->url = $request->url;
+            $google_podcasts->save();
+        }
+        return redirect()->back();
+    }
+
+    public function SpotifyDistribution()
+    {
+        $google_podcasts = GooglePodcasts::where(['user_id' => Auth::user()->id])->first();
+        return view('dashboard.spotify_distribution', compact('google_podcasts'));
     }
 }
