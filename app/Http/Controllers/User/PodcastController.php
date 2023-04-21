@@ -54,14 +54,14 @@ class PodcastController extends Controller
         $last_day_downloads = count($podcast->downloads->where('created_at', '>=', date('Y-m-d')));
         $last_seven_day_downloads = count($podcast->downloads->where('created_at', '>=', $seven_days_date));
         $last_thirty_day_downloads = count($podcast->downloads->where('created_at', '>=', $thirty_days_date));
-        $categories = Categories::where(['status' => 1])->get();
+        $categories = Categories::where(['status' =>1, 'admin_id' => Auth::user()->id])->get();
         $date_now = date('Y-m-d H:i:s');
         return view('dashboard.podcast_detail', compact('podcast', 'categories', 'total_views', 'last_day_views', 'last_seven_day_views', 'last_thirty_day_views', 'total_downloads', 'last_day_downloads', 'last_seven_day_downloads', 'last_thirty_day_downloads', 'date_now'));
     }
     
     public function NewPodcast()
     {
-        $categories = Categories::where(['status' => 1, 'admin_id' => Auth::user()->belongs_to])->get();
+        $categories = Categories::where(['status' => 1, 'admin_id' => Auth::user()->id])->get();
         $date_now = date('Y-m-d H:i:s');
         return view('dashboard.new_podcast', compact('categories', 'date_now'));
     }

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Exports\PodcastsExport;
 use App\Exports\UserPodcastsExport;
 use App\Models\Categories;
+use App\Models\GooglePodcasts;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -313,7 +314,36 @@ class AdminPodcastController extends Controller
                 return view('admin.podcast_detail', compact('podcast','total_views', 'last_day_views', 'last_seven_day_views', 'last_thirty_day_views', 'total_downloads', 'last_day_downloads', 'last_seven_day_downloads', 'last_thirty_day_downloads'));
             }
         }
-
         return redirect()->back();
+    }
+
+    public function GooglePodcastsDistribution()
+    {
+        $google_podcasts = GooglePodcasts::where(['user_id' => Auth::user()->id])->first();
+        return view('admin.google_podcasts_distribution', compact('google_podcasts'));
+    }
+
+    public function GooglePodcastsDistributionSave(Request $request)
+    {
+        $request->validate([
+            'url' => 'required'
+        ]);
+        $google_podcasts = GooglePodcasts::where(['user_id' => Auth::user()->id])->first();
+        if ($google_podcasts) {
+            $google_podcasts->url = $request->url;
+            $google_podcasts->save();
+        } else {
+            $google_podcasts = new GooglePodcasts();
+            $google_podcasts->user_id = Auth::user()->id;
+            $google_podcasts->url = $request->url;
+            $google_podcasts->save();
+        }
+        return redirect()->back();
+    }
+
+    public function SpotifyDistribution()
+    {
+        $google_podcasts = GooglePodcasts::where(['user_id' => Auth::user()->id])->first();
+        return view('admin.spotify_distribution', compact('google_podcasts'));
     }
 }

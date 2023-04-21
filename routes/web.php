@@ -36,6 +36,7 @@ use App\Http\Controllers\Super\BasicSettingsController;
 use App\Http\Controllers\Super\SuperDashboardController;
 use App\Http\Controllers\Super\SuperPageController;
 use App\Http\Controllers\Super\SuperSupportController;
+use App\Http\Controllers\User\UserCategoriesController;
 use App\Http\Controllers\User\UserStoreCategoriesController;
 use App\Http\Controllers\User\UserStoreColorsController;
 use App\Http\Controllers\User\UserStoreOrdersController;
@@ -99,6 +100,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin_auth'], function () {
     Route::get('/podcast/detail/{id}', [AdminPodcastController::class, 'AdminPodcastDetail']);
     Route::post('/podcast/update', [AdminPodcastController::class, 'UpdatePodcast']);
     Route::get('/podcast/delete/{id}', [AdminPodcastController::class, 'DeletePodcast']);
+
+    Route::get('/podcasts/distribution', [AdminPodcastController::class, 'PodcastsDistribution']);
+    Route::get('/podcasts/distribution/google_podcasts', [AdminPodcastController::class, 'GooglePodcastsDistribution']);
+    Route::post('/podcasts/distribution/google_podcasts/save', [AdminPodcastController::class, 'GooglePodcastsDistributionSave']);
+
+    Route::get('/podcasts/distribution/spotify', [AdminPodcastController::class, 'SpotifyDistribution']);
 
     Route::get('/podcasts', [AdminPodcastController::class, 'AdminPodcasts']);
     Route::get('/users/podcasts', [AdminPodcastController::class, 'UsersPodcasts']);
@@ -205,6 +212,13 @@ Route::group(['prefix' => 'users', 'middleware' => 'user_auth'], function () {
     Route::get('/podcast/new/revert/{id}', [PodcastController::class, 'RevertPodcast']);
     Route::post('/podcast/new/upload', [PodcastController::class, 'UploadPodcast']);
     Route::post('/podcast/save', [PodcastController::class, 'SavePodcast']);
+
+    Route::get('/categories', [UserCategoriesController::class, 'Categories']);
+    Route::post('/category/add', [CategoriesController::class, 'AddCategory']);
+    Route::get('/category/inactive/{id}', [CategoriesController::class, 'InactiveCategory']);
+    Route::get('/category/active/{id}', [CategoriesController::class, 'ActiveCategory']);
+    Route::post('/category/edit', [CategoriesController::class, 'EditCategory']);
+    Route::get('/category/delete/{id}', [CategoriesController::class, 'DeleteCategory']);
 
     Route::get('/podcasts/export', [PodcastController::class, 'ExportPodcasts']);
     Route::get('/podcasts', [PodcastController::class, 'UserPodcasts']);

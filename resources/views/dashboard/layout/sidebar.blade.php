@@ -61,6 +61,12 @@
                     <span class="menu-title text-truncate" data-i18n="Email">My Podcasts</span>
                 </a>
             </li>
+            <li class="@yield('categories')">
+                <a class="d-flex align-items-center" href="{{url('/users/categories')}}">
+                    <i data-feather='sidebar'></i>
+                    <span class="menu-title text-truncate" data-i18n="Email">Categories</span>
+                </a>
+            </li>
             <li class="@yield('podcasts_distribution')">
                 <a class="d-flex align-items-center" href="{{ url('/users/podcasts/distribution') }}">
                     <i data-feather='video'></i>
