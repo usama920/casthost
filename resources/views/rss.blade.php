@@ -25,7 +25,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL
                 <description>{{ $podcast->description }}</description>
                 <enclosure url="{{ url('storage/podcast/' . $podcast->id . '/' . $podcast->podcast) }}" type="audio/mpeg"
                     length="{{ $podcast->length }}" />
-                <itunes:image href="{{ url('storage/podcast/' . $podcast->id . '/' . $podcast->other_rss_image) }}" />
+                <itunes:image href="{{ url('storage/podcast/' . $podcast->id . '/images/' . $podcast->other_rss_image) }}" />
                 <itunes:duration>{{ $podcast->duration }}</itunes:duration>
                 <pubDate>{{ $podcast->pub_date }}</pubDate>
                 <itunes:explicit>false</itunes:explicit>

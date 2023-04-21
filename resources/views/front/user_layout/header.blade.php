@@ -163,7 +163,7 @@
                                                     <li>
                                                         <a class="dropdown-item @yield('navbar_login')"
                                                             href="{{ url($user->username.'/login') }}">
-                                                            Logout
+                                                            Login
                                                         </a>
                                                     </li>
                                                 @endif
