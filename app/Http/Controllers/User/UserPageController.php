@@ -83,6 +83,7 @@ class UserPageController extends Controller
             if (file_exists($file_path) && $page->cover_image != null) {
                 unlink($file_path);
             }
+
             $image = $request->file('cover_image');
             $ext = $image->extension();
             $image_name = time() . uniqid() . '.' . $ext;
@@ -94,11 +95,27 @@ class UserPageController extends Controller
             if (file_exists($file_path) && $page->profile_image != null) {
                 unlink($file_path);
             }
+
+            if ($page->rss_profile_image != null) {
+                $file_path = public_path('project_assets/images/' . $page->rss_profile_image);
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+
             $image = $request->file('profile_image');
             $ext = $image->extension();
+
+            $rss_image_name = time() . uniqid() . '1500' . '.' . $ext;
+            $destinationPath = public_path('/project_assets/images/' . $rss_image_name);
+            $imgFile = Image::make($image->getRealPath());
+            $imgFile->resize(1500, 1500)->save($destinationPath . '/' . $rss_image_name);
+
             $image_name = time() . uniqid() . '.' . $ext;
             $image->move(public_path('project_assets/images'), $image_name);
             $page->profile_image = $image_name;
+            $page->rss_profile_image = $rss_image_name;
+
         }
         $page->heading = $request->heading;
         $page->text = $request->text;

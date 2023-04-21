@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Image;
 
 class PodcastController extends Controller
 {
@@ -125,9 +126,19 @@ class PodcastController extends Controller
         if ($request->hasFile('cover_image')) {
             $cover_image = $request->file('cover_image');
             $ext = $cover_image->extension();
+
+            $rss_image_name = time() . uniqid() . '1500' . '.' . $ext;
+            $destinationPath = public_path('/storage/podcast'.$podcast_id.'/images');
+            $imgFile = Image::make($cover_image->getRealPath());
+            $imgFile->resize(1500, 1500)->save($destinationPath . '/' . $rss_image_name);
+
+
             $cover_image_name = time() . uniqid() . '.' . $ext;
             $cover_image->storeAs('public/podcast/'.$podcast_id.'/images', $cover_image_name);
-            Podcast::where('id', $podcast_id)->update(['cover_image'    =>  $cover_image_name]);
+            Podcast::where('id', $podcast_id)->update([
+                'cover_image'    =>  $cover_image_name,
+                'other_rss_image'    =>  $rss_image_name
+            ]);
         } else {
             Podcast::where('id', $podcast_id)->delete();
             Session::flash('message', 'Please provide valid cover image...');
@@ -181,14 +192,28 @@ class PodcastController extends Controller
             if (file_exists($file_path)) {
                 unlink($file_path);
             }
+
+            if($existing_podcast->other_rss_image != null) {
+                $file_path = storage_path('app/public/podcast/' . $request->id . '/images/' . $existing_podcast->other_rss_image);
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+
             $cover_image = $request->file('cover_image');
             $ext = $cover_image->extension();
+
+            $rss_image_name = time() . uniqid() . '1500' . '.' . $ext;
+            $destinationPath = public_path('/storage/podcast/' . $request->id . '/images');
+            $imgFile = Image::make($cover_image->getRealPath());
+            $imgFile->resize(1500, 1500)->save($destinationPath . '/' . $rss_image_name);
+
             $cover_image_name = time() . uniqid() . '.' . $ext;
             $cover_image->storeAs('public/podcast/'.$request->id.'/images', $cover_image_name);
             $existing_podcast->cover_image = $cover_image_name;
+            $existing_podcast->other_rss_image = $rss_image_name;
         }
         if(isset($request->premiere_datetime) && $request->premiere_datetime != null) {
-
             $existing_podcast->premiere_datetime = $request->premiere_datetime;
         }
 
@@ -205,11 +230,22 @@ class PodcastController extends Controller
 
     public function DeletePodcast($id)
     {
-        $podcast = Podcast::where('id', $id)->first();
+        $podcast = Podcast::where(['id' => $id, 'user_id' => Auth::user()->id])->first();
+        if (!$podcast) {
+            return redirect()->back();
+        }
         $file_path = storage_path('app/public/podcast/' . $podcast->id . '/images/' . $podcast->cover_image);
         if (file_exists($file_path)) {
             unlink($file_path);
         }
+
+        if ($podcast->other_rss_image != null) {
+            $file_path = storage_path('app/public/podcast/' . $podcast->id . '/images/' . $podcast->other_rss_image);
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+        }
+
         $file_path = storage_path('app/public/podcast/' . $podcast->id . '/' . $podcast->podcast);
         if (file_exists($file_path)) {
             unlink($file_path);

@@ -110,6 +110,10 @@ function about_page()
     return $page;
 }
 
+// function get_podcast_size($path) {
+//     return file
+// }
+
 function get_memory_usage($id, $type)
 {
     $total_size = 0;

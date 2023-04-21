@@ -24,6 +24,8 @@ use App\Models\UserHomePage;
 use App\Models\UserStorePage;
 use App\Models\UserSubscribers;
 use App\Models\Views;
+use DateTime;
+use DateTimeZone;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -864,14 +866,25 @@ class HomeController extends Controller
             'status'   =>  1,
             'admin_status' => 1
         ])->where('premiere_datetime', '<', date('Y-m-d H:i:s'))
-        ->where(['podcast_ext' => 'mp3', 'user_id' => $user->id])
-        ->with(['category:id,title'])->latest()->get();
+        ->where([
+            'podcast_ext' => 'mp3', 
+            'user_id' => $user->id
+        ])->with(['category:id,title'])->latest()->get();
         foreach($podcasts as $key => $podcast) {
             $mp3file = new MP3Controller(public_path().'/storage/podcast/'.$podcast->id.'/'.$podcast->podcast);
             $podcasts[$key]->duration = $mp3file->getDuration();
+            $podcasts[$key]->length = filesize(public_path() . '/storage/podcast/' . $podcast->id . '/' . $podcast->podcast);
+            $GMTObj = new DateTime($podcast->premiere_datetime, new DateTimeZone("GMT"));
+            $day = date_format($GMTObj, 'D');
+            $date = date_format($GMTObj, 'd');
+            $month = date_format($GMTObj, 'M');
+            $year = date_format($GMTObj, 'Y');
+            $hour = date_format($GMTObj, 'H');
+            $minutes = date_format($GMTObj, 'i');
+            $seconds = date_format($GMTObj, 's');
+            $timezone  = date_format($GMTObj, 'e');
+            $podcasts[$key]->pub_date = $day.", ".$date." ".$month." ".$year." ".$hour.":".$minutes.":".$seconds." ".$timezone;
         }
-        // prx($podcasts);
-
 
         return response()->view('rss', [
             'link' => $link,
@@ -880,5 +893,46 @@ class HomeController extends Controller
             'user' => $user,
             'userAbout' => $userAbout
         ])->header('Content-Type', 'text/xml');  
+    }
+
+    public function UserAllRSS($username)
+    {
+        $basic_settings = BasicSettings::first();
+        $link = url('/' . $username);
+        $user = User::where(['username' => $username, 'status' => 1])->first();
+        if (!$user) {
+            return;
+        }
+        $userAbout = UserAboutPage::where(['user_id' => $user->id])->first();
+        $podcasts = Podcast::where([
+            'status'   =>  1,
+            'admin_status' => 1
+        ])->where('premiere_datetime', '<', date('Y-m-d H:i:s'))
+        ->where([
+            'user_id' => $user->id
+        ])->with(['category:id,title'])->latest()->get();
+        foreach ($podcasts as $key => $podcast) {
+            $mp3file = new MP3Controller(public_path() . '/storage/podcast/' . $podcast->id . '/' . $podcast->podcast);
+            $podcasts[$key]->duration = $mp3file->getDuration();
+            $podcasts[$key]->length = filesize(public_path() . '/storage/podcast/' . $podcast->id . '/' . $podcast->podcast);
+            $GMTObj = new DateTime($podcast->premiere_datetime, new DateTimeZone("GMT"));
+            $day = date_format($GMTObj, 'D');
+            $date = date_format($GMTObj, 'd');
+            $month = date_format($GMTObj, 'M');
+            $year = date_format($GMTObj, 'Y');
+            $hour = date_format($GMTObj, 'H');
+            $minutes = date_format($GMTObj, 'i');
+            $seconds = date_format($GMTObj, 's');
+            $timezone  = date_format($GMTObj, 'e');
+            $podcasts[$key]->pub_date = $day . ", " . $date . " " . $month . " " . $year . " " . $hour . ":" . $minutes . ":" . $seconds . " " . $timezone;
+        }
+
+        return response()->view('rss', [
+            'link' => $link,
+            'basic_settings' => $basic_settings,
+            'podcasts' => $podcasts,
+            'user' => $user,
+            'userAbout' => $userAbout
+        ])->header('Content-Type', 'text/xml');
     }
 }

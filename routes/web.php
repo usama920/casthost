@@ -339,6 +339,7 @@ Route::group(['middleware' => 'subscriber_auth'], function () {
 Route::get('/superAdmin/logout', [SuperDashboardController::class, 'SuperLogout']);
 
 Route::get('/rss/{username}', [HomeController::class, 'UserRSS']);
+Route::get('/rss/all/{username}', [HomeController::class, 'UserAllRSS']);
 Route::post('/store/update_cart', [ HomeController::class, 'UpdateCart']);
 Route::post( '/store/update_cart/quantity', [HomeController::class, 'UpdateCartQuantity']);
 Route::post('/store/update_cart/remove', [HomeController::class, 'RemoveCartProduct']);

@@ -18,6 +18,7 @@ class Podcast extends Model
         'category_id',
         'podcast',
         'cover_image',
+        'other_rss_image',
         'premiere_datetime',
         'subscribers_mail',
         'description',

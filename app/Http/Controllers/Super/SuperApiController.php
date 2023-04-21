@@ -143,7 +143,12 @@ class SuperApiController extends Controller
                 $extension = pathinfo(public_path('project_assets/images/' . $default_about_page->profile_image), PATHINFO_EXTENSION);
                 $image_name = time() . uniqid() . '.' . $extension;
                 File::copy(public_path('project_assets/images/' . $default_about_page->profile_image), public_path('project_assets/images/' . $image_name));
+
+                $rss_image_name = time() . uniqid() . '1500.' . $extension;
+                File::copy(public_path('project_assets/images/' . $default_about_page->profile_image), public_path('project_assets/images/' . $rss_image_name));
+
                 $user_about_page->profile_image = $image_name;
+                $user_about_page->rss_profile_image = $rss_image_name;
             }
             $user_about_page->heading = $default_about_page->heading;
             $user_about_page->text = $default_about_page->text;
